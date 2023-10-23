@@ -36,6 +36,7 @@ with open("../../data/json/image.json", 'r') as file:
                 cursor.execute(
                     "SELECT genre_id FROM genres WHERE name = %s;", (genre,))
                 genre_id = cursor.fetchone()[0]
+                image_id = data['id']
                 cursor.execute(
                     "INSERT INTO image_genre (image_id, genre_id) VALUES (%s, %s) ON DUPLICATE KEY UPDATE image_id=image_id, genre_id=genre_id",
                     (image_id, genre_id))
