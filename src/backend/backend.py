@@ -3,6 +3,8 @@ from bson import ObjectId
 import mysql.connector
 from pymongo import MongoClient
 
+from flask_cors import CORS
+
 
 def json_encoder(o):
     if isinstance(o, ObjectId):
@@ -12,6 +14,7 @@ def json_encoder(o):
 
 
 app = Flask(__name__)
+CORS(app)
 
 
 @app.route('/search_image', methods=['POST'])

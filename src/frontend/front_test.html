@@ -19,9 +19,9 @@
 
     <script>
         function searchMovie() {
-            let title = document.getElementById('imageTitle').value;
+            let title = document.getElementById('movieTitle').value;
 
-            fetch('/search_title', {
+            fetch('http://127.0.0.1:5000/search_image', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -30,10 +30,11 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    document.getElementById('mysqlResults').textContent = JSON.stringify(data.mysql, null, 2);
-                    document.getElementById('mongoResults').textContent = JSON.stringify(data.mongodb, null, 2);
+                    document.getElementById('mysqlResults').textContent = JSON.stringify(data.mysql_data, null, 2);
+                    document.getElementById('mongoResults').textContent = JSON.stringify(data.mongo_data, null, 2);
                 });
         }
+
     </script>
 
 </body>
