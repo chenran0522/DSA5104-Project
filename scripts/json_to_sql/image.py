@@ -4,7 +4,7 @@ import json
 # 数据库连接配置
 config = {
     'user': 'root',
-    'password': 'Jesseli0915?',
+    'password': '',
     'host': '127.0.0.1',
     'database': 'MusicDB',
     'raise_on_warnings': True
