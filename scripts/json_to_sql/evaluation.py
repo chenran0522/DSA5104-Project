@@ -19,7 +19,7 @@ with open("../../data/json/evaluation.json", 'r') as file:
         data = json.loads(line.strip())
 
         # 插入Image数据
-        cursor.execute("INSERT IGNORE INTO Image (type_id, target_id, user_id, score, comment) VALUES (%s, %s, %s, %s, %s)",
+        cursor.execute("INSERT IGNORE INTO Evaluation (type_id, target_id, user_id, score, comment) VALUES (%s, %s, %s, %s, %s)",
                        (data['type_id'], data['target_id'], data['user_id'], data['score'], data['comment']))
 
         # 提交事务
