@@ -14,16 +14,22 @@ config = {
 conn = mysql.connector.connect(**config)
 cursor = conn.cursor()
 
-with open("../../data/json/evaluation.json", 'r') as file:
-    for line in file:
-        data = json.loads(line.strip())
+with open("evaluation.json", "r", encoding="utf-8") as json_file:
+    data = json_file.read()
 
-        # 插入Image数据
-        cursor.execute("INSERT IGNORE INTO Evaluation (type_id, target_id, user_id, score, comment) VALUES (%s, %s, %s, %s, %s)",
-                       (data['type_id'], data['target_id'], data['user_id'], data['score'], data['comment']))
+# 使用正则表达式查找大括号中的数据块
+pattern = r'\{[^{}]*\}'
+matches = re.findall(pattern, data)
 
-        # 提交事务
-        conn.commit()
+for line in matches:
+    data = json.loads(line.strip())
+
+    # 插入Image数据
+    cursor.execute("INSERT IGNORE INTO Evaluation (type_id, target_id, user_id, score, comment) VALUES (%s, %s, %s, %s, %s)",
+                   (data['type_id'], data['target_id'], data['user_id'], data['score'], data['comment']))
+
+    # 提交事务
+    conn.commit()
 
 # 关闭连接
 cursor.close()
