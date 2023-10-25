@@ -14,7 +14,7 @@ config = {
 conn = mysql.connector.connect(**config)
 cursor = conn.cursor()
 
-with open("evaluation.json", "r", encoding="utf-8") as json_file:
+with open("../../data/json/evaluation.json", "r", encoding="utf-8") as json_file:
     data = json_file.read()
 
 # 使用正则表达式查找大括号中的数据块
