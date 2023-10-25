@@ -2,40 +2,39 @@
 <html>
 
 <head>
-    <title>Database Query</title>
+	<title>Database Query</title>
 </head>
 
 <body>
 
-    <h2>Search Image by Title</h2>
-    <input type="text" id="movieTitle" placeholder="Enter movie title">
-    <button onclick="searchMovie()">Search</button>
+	<h2>Search Image by Title</h2>
+	<input type="text" id="movieTitle" placeholder="Enter movie title">
+	<button onclick="searchMovie()">Search</button>
 
-    <h3>MySQL Results:</h3>
-    <pre id="mysqlResults"></pre>
+	<h3>MySQL Results:</h3>
+	<pre id="mysqlResults"></pre>
 
-    <h3>MongoDB Results:</h3>
-    <pre id="mongoResults"></pre>
+	<h3>MongoDB Results:</h3>
+	<pre id="mongoResults"></pre>
 
-    <script>
-        function searchMovie() {
-            let title = document.getElementById('movieTitle').value;
+	<script>
+		function searchMovie() {
+			let title = document.getElementById('movieTitle').value;
 
-            fetch('http://127.0.0.1:5000/search_image', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ title: title })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('mysqlResults').textContent = JSON.stringify(data.mysql_data, null, 2);
-                    document.getElementById('mongoResults').textContent = JSON.stringify(data.mongo_data, null, 2);
-                });
-        }
-
-    </script>
+			fetch('http://127.0.0.1:5000/search_image', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ title: title })
+			})
+				.then(response => response.json())
+				.then(data => {
+					document.getElementById('mysqlResults').textContent = JSON.stringify(data.mysql_data, null, 2);
+					document.getElementById('mongoResults').textContent = JSON.stringify(data.mongo_data, null, 2);
+				});
+		}
+	</script>
 
 </body>
 
