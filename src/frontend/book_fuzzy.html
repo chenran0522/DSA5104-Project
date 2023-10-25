@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NUS Database Query - Book_title</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif; /* Updated font */
+            background: linear-gradient(45deg, #FFFD78, #FFC512);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+        }
+
+        .container {
+            text-align: center;
+            padding: 30px;
+            background: rgba(87, 86, 87, 0.7);
+            border-radius: 15px;
+            width: 80%;
+            max-width: 800px;
+        }
+
+        .logo {
+            width: 150px;
+            margin-bottom: 20px;
+        }
+
+        #searchBox {
+            margin-top: 20px;
+        }
+
+        #movieTitle {
+            padding: 10px;
+            width: 60%;
+            border-radius: 5px;
+            border: none;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #bca20f;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #B8408F;
+        }
+
+        #searchResults {
+            margin-top: 20px;
+        }
+
+        pre {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <img src="https://www.nus.edu.sg/images/default-source/base/logo.png" alt="NUS Logo" class="logo">
+        <h2>Search Book by Title</h2>
+        <div id="searchBox">
+            <input type="text" id="movieTitle" placeholder="Enter book title">
+            <button onclick="searchMovie()">Search</button>
+        </div>
+        <div id="searchResults">
+            <h3>MySQL Results</h3>
+            <pre id="mysqlResults"></pre>
+            <h3>MongoDB Results</h3>
+            <pre id="mongoResults"></pre>
+        </div>
+
+        <script>
+            function searchMovie() {
+                let title = document.getElementById('movieTitle').value;
+
+                fetch('http://127.0.0.1:5000/search_image', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ title: title })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('mysqlResults').textContent = JSON.stringify(data.mysql_data, null, 2);
+                        document.getElementById('mongoResults').textContent = JSON.stringify(data.mongo_data, null, 2);
+                    });
+            }
+        </script>
+    </div>
+</body>
+
+</html>
