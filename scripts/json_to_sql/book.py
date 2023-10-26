@@ -4,9 +4,9 @@ import json
 # 数据库连接配置
 config = {
     'user': 'root',
-    'password': 'cr003265...',
+    'password': '...',
     'host': '127.0.0.1',
-    'database': 'ImageDB',
+    'database': 'BookDB',
     'raise_on_warnings': True
 }
 
@@ -25,8 +25,8 @@ with open("../../data/json/book.json", 'r', encoding='utf-8') as file:
 
     for item in data:
         # 插入Image数据
-        cursor.execute("INSERT IGNORE INTO Book (book_id, title, num_rating, rating, num_voters, type_id) VALUES (%s, %s, %s, %s, %s, %s)",
-                       (item['id'], item['title'], item['num_ratings'], item['rating'], item['num_voters'], item['type_id']))
+        cursor.execute("INSERT IGNORE INTO Book (book_id, title, rating, watch_numbers,score, type_id) VALUES (%s, %s, %s, %s, %s, %s)",
+                       (item['id'], item['title'], item['rating'],item['watch_numbers'],  item['score'], item['type_id']))
 
         # 处理并插入genres数据l
         #genres = item.get('genres', [])
@@ -34,10 +34,10 @@ with open("../../data/json/book.json", 'r', encoding='utf-8') as file:
         for author_name in authors_name:
             if author_name not in inserted_name:
                 cursor.execute(
-                    "INSERT INTO Authors (name) VALUE(%s)", (author_name,))
+                    "INSERT INTO Authors (author_name) VALUE(%s)", (author_name,))
                 inserted_name.add(author_name)
             cursor.execute(
-                "SELECT author_id FROM Authors WHERE name = %s;", (author_name,))
+                "SELECT author_id FROM Authors WHERE author_name = %s;", (author_name,))
             author_id = cursor.fetchone()[0]
             book_id = item['id']
             cursor.execute(
