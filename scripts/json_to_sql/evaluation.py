@@ -1,12 +1,13 @@
 import mysql.connector
 import json
+import re
 
 # 数据库连接配置
 config = {
     'user': 'root',
-    'password': 'cr003265...',
+    'password': 'ytx918107',
     'host': '127.0.0.1',
-    'database': 'EvaluationDB',
+    'database': 'userDB',
     'raise_on_warnings': True
 }   
 
@@ -25,8 +26,8 @@ for line in matches:
     data = json.loads(line.strip())
 
     # 插入Image数据
-    cursor.execute("INSERT IGNORE INTO Evaluation (type_id, target_id, user_id, score, comment) VALUES (%s, %s, %s, %s, %s)",
-                   (data['type_id'], data['target_id'], data['user_id'], data['score'], data['comment']))
+    cursor.execute("INSERT IGNORE INTO Evaluation ( user_id, type_id, target_id, rating, comment) VALUES (%d, %d, %d, %f, %s)",
+                   (data['user_id'], data['type_id'], data['target_id'], data['score'], data['comment']))
 
     # 提交事务
     conn.commit()
