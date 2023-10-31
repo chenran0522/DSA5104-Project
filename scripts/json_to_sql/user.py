@@ -5,11 +5,11 @@ import re
 # 数据库连接配置
 config = {
     'user': 'root',
-    'password': 'Wxp-0525',
+    'password': 'ytx918107',
     'host': '127.0.0.1',
-    'database': 'SYSTEMDATABASE',
+    'database': 'userDB',
     'raise_on_warnings': True
-}
+}   
 
 # 与MySQL建立连接
 conn = mysql.connector.connect(**config)
@@ -26,7 +26,7 @@ for line in matches:
     data = json.loads(line.strip())
 
     # 插入Image数据
-    cursor.execute("INSERT IGNORE INTO User (user_id, password, name) VALUES (%d, %s, %s)",
+    cursor.execute("INSERT IGNORE INTO User (user_id, password, name) VALUES (%s, %s, %s)",
                    (data['user_id'], data['password'], data['name']))
 
     # 提交事务
