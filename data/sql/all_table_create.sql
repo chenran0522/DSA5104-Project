@@ -1,4 +1,4 @@
---CREATE SYSTEMDATABASE;
+-- CREATE DATABASE SYSTEMDATABASE;
 
 USE SYSTEMDATABASE;
 
@@ -8,6 +8,23 @@ DROP TABLE IF EXISTS Image_genre;
 DROP TABLE IF EXISTS Cast_info;
 DROP TABLE IF EXISTS genres;
 DROP TABLE IF EXISTS Image;
+DROP TABLE IF EXISTS Book_author;
+DROP TABLE IF EXISTS Authors;
+DROP TABLE IF EXISTS Book;
+
+DROP TABLE IF EXISTS Music_Artist;
+DROP TABLE IF EXISTS Music_genres;
+DROP TABLE IF EXISTS Artist;
+DROP TABLE IF EXISTS Music;
+
+DROP TABLE IF EXISTS User;
+DROP TABLE IF EXISTS Evaluation;
+
+DROP TABLE IF EXISTS Game;
+DROP TABLE IF EXISTS Director_id;
+DROP TABLE IF EXISTS game_genres;
+DROP TABLE IF EXISTS Game_director;
+
 
 -- 重新创建表
 CREATE TABLE Image (
@@ -47,13 +64,6 @@ CREATE TABLE image_cast (
 );
 -- Create database BookDB;
 
-
-
--- 删除已存在的表，如果需要的话
-DROP TABLE IF EXISTS Book_author;
-DROP TABLE IF EXISTS Authors;
-DROP TABLE IF EXISTS Book;
-
 -- 重新创建表
 CREATE TABLE Book (
     book_id INT PRIMARY KEY,
@@ -77,16 +87,8 @@ CREATE TABLE Book_author (
     FOREIGN KEY (author_id) REFERENCES Authors(author_id)
 );
 
-
--- create DATABASE MusicDB;
-USE MusicDB;
-
 -- 删除已存在的表，如果需要的话
-DROP TABLE IF EXISTS Music_Artist;
-DROP TABLE IF EXISTS Music_genres;
-DROP TABLE IF EXISTS Artist;
-DROP TABLE IF EXISTS Music;
-DROP TABLE IF EXISTS genres;
+
 
 -- 重新创建表
 CREATE TABLE Music (
@@ -118,17 +120,13 @@ CREATE TABLE Music_Artist (
     FOREIGN KEY (music_id) REFERENCES Music(music_id),
     FOREIGN KEY (artist_id) REFERENCES Artist(artist_id)
 );
-USE userdb;
-
--- 删除已存在的表，如果需要的话
-DROP TABLE IF EXISTS User;
-DROP TABLE IF EXISTS Evaluation;
 
 -- 重新创建表
 CREATE TABLE User (
     id INT PRIMARY KEY,
     name VARCHAR(255),
-    password VARCHAR(255));
+    password VARCHAR(255)
+);
 
 
 CREATE TABLE Evaluation (
@@ -137,4 +135,36 @@ CREATE TABLE Evaluation (
     target_id INT,
     PRIMARY KEY (user_id, type_id, target_id),
     FOREIGN KEY (user_id) REFERENCES User(id)
+);
+
+-- 重新创建表
+CREATE TABLE Game (
+    game_id INT PRIMARY KEY,
+    title VARCHAR(255),
+    year INT,
+    rating FLOAT,
+    director_id INT,
+    plot VARCHAR(255),
+    type_id INT
+);
+
+CREATE TABLE game_genres (
+    game_id INT,
+    genre_id INT,
+    PRIMARY KEY (game_id, genre_id),
+    FOREIGN KEY (game_id) REFERENCES Game(game_id),
+    FOREIGN KEY (genre_id) REFERENCES genres(genre_id)
+);
+
+CREATE TABLE Director_id (
+    Director_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) UNIQUE
+);
+
+CREATE TABLE Game_director (
+    game_id INT,
+    director_id INT,
+    PRIMARY KEY (game_id, director_id),
+    FOREIGN KEY (game_id) REFERENCES Game(game_id),
+    FOREIGN KEY (director_id) REFERENCES Director_id(director_id)
 );

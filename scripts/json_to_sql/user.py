@@ -5,11 +5,7 @@ import re
 # 数据库连接配置
 config = {
     'user': 'root',
-<<<<<<< HEAD
     'password': 'Wxp-0525',
-=======
-    'password': 'ytx918107',
->>>>>>> 4080fba43ba6f0ed240230ef9e9b95c356248576
     'host': '127.0.0.1',
     'database': 'SYSTEMDATABASE',
     'raise_on_warnings': True
