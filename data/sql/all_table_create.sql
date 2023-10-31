@@ -123,32 +123,34 @@ CREATE TABLE Music_Artist (
 
 -- 重新创建表
 CREATE TABLE User (
-    id INT PRIMARY KEY,
+    user_id INT PRIMARY KEY,
     name VARCHAR(255),
-    password VARCHAR(255)
-);
+    password VARCHAR(255));
 
 
 CREATE TABLE Evaluation (
     user_id INT,
     type_id INT,
     target_id INT,
+    score float,
+    comment VARCHAR(255),
     PRIMARY KEY (user_id, type_id, target_id),
-    FOREIGN KEY (user_id) REFERENCES User(id)
+    FOREIGN KEY (user_id) REFERENCES User(user_id)
 );
+
+
 
 -- 重新创建表
 CREATE TABLE Game (
     game_id INT PRIMARY KEY,
-    title VARCHAR(255),
+    name VARCHAR(255),
     year INT,
+    plot VARCHAR(511),
     rating FLOAT,
-    director_id INT,
-    plot VARCHAR(255),
     type_id INT
 );
 
-CREATE TABLE game_genres (
+CREATE TABLE game_genre (
     game_id INT,
     genre_id INT,
     PRIMARY KEY (game_id, genre_id),
@@ -168,3 +170,4 @@ CREATE TABLE Game_director (
     FOREIGN KEY (game_id) REFERENCES Game(game_id),
     FOREIGN KEY (director_id) REFERENCES Director_id(director_id)
 );
+
