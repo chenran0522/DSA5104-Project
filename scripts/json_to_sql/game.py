@@ -6,7 +6,7 @@ config = {
     'user': 'root',
     'password': 'Wxp-0525',
     'host': '127.0.0.1',
-    'database': 'gameDB',
+    'database': 'SYSTEMDATABASE',
     'raise_on_warnings': True
 }
 
@@ -23,7 +23,7 @@ with open("../../data/json/game.json", 'r') as file:
 
         # 插入Image数据
         cursor.execute("INSERT IGNORE INTO game (game_id, name, year, plot, rating, type_id) VALUES (%s, %s, %s, %s, %s, %s)",
-                       (data['id'], data['name'], data['year'], data['plot'], data['rating'], data['type_id']))
+                       (data['game_id'], data['name'], data['year'], data['plot'], data['rating'], data['type_id']))
 
         # 处理并插入genres数据
         genres = data.get('genres')

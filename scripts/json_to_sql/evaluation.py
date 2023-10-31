@@ -1,14 +1,15 @@
 import mysql.connector
 import json
+import re
 
 # 数据库连接配置
 config = {
     'user': 'root',
-    'password': 'cr003265...',
+    'password': 'Wxp-0525',
     'host': '127.0.0.1',
-    'database': 'EvaluationDB',
+    'database': 'SYSTEMDATABASE',
     'raise_on_warnings': True
-}   
+}
 
 # 与MySQL建立连接
 conn = mysql.connector.connect(**config)
