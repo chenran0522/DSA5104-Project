@@ -12,7 +12,7 @@ CREATE TABLE Game (
     game_id INT PRIMARY KEY,
     name VARCHAR(255),
     year INT,
-    plot VARCHAR(255),
+    plot VARCHAR(511),
     rating FLOAT,
     type_id INT
 );
