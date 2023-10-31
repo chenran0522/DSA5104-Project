@@ -1,4 +1,6 @@
-USE ImageDB;
+--CREATE SYSTEMDATABASE;
+
+USE SYSTEMDATABASE;
 
 -- 删除已存在的表，如果需要的话
 DROP TABLE IF EXISTS image_cast;
