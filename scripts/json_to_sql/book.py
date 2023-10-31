@@ -18,19 +18,19 @@ cursor = conn.cursor()
 inserted_name = set()
 inserted_casts = set()
 with open("../../data/json/book.json", 'r', encoding='utf-8') as file:
-#with open("../../data/json/book.json", 'r') as file:
+    # with open("../../data/json/book.json", 'r') as file:
     data = json.load(file)  # 读取整个JSON文件为一个列表
-    #for line in file:
-     #   item = json.loads(line)
+    # for line in file:
+    #   item = json.loads(line)
 
     for item in data:
         # 插入Image数据
         cursor.execute("INSERT IGNORE INTO Book (book_id, title, rating, watch_numbers,score, type_id) VALUES (%s, %s, %s, %s, %s, %s)",
-                       (item['id'], item['title'], item['rating'],item['watch_numbers'],  item['score'], item['type_id']))
+                       (item['id'], item['title'], item['rating'], item['watch_numbers'],  item['score'], item['type_id']))
 
         # 处理并插入genres数据l
         #genres = item.get('genres', [])
-        authors_name=item.get('author',[])
+        authors_name = item.get('author', [])
         for author_name in authors_name:
             if author_name not in inserted_name:
                 cursor.execute(
