@@ -1,20 +1,19 @@
 USE gamedb;
 
 -- 删除已存在的表，如果需要的话
-DROP TABLE IF EXISTS Game;
-DROP TABLE IF EXISTS Director_id;
-DROP TABLE IF EXISTS game_genres;
+DROP TABLE IF EXISTS game_genre;
 DROP TABLE IF EXISTS Game_director;
 DROP TABLE IF EXISTS genres;
+DROP TABLE IF EXISTS Director_id;
+DROP TABLE IF EXISTS Game;
 
 -- 重新创建表
 CREATE TABLE Game (
     game_id INT PRIMARY KEY,
-    title VARCHAR(255),
+    name VARCHAR(255),
     year INT,
-    rating FLOAT,
-    director_id INT,
     plot VARCHAR(255),
+    rating FLOAT,
     type_id INT
 );
 
@@ -23,7 +22,7 @@ CREATE TABLE genres (
     name VARCHAR(255) UNIQUE
 );
 
-CREATE TABLE game_genres (
+CREATE TABLE game_genre (
     game_id INT,
     genre_id INT,
     PRIMARY KEY (game_id, genre_id),
