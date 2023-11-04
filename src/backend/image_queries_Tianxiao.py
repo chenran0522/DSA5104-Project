@@ -26,7 +26,7 @@ def search_image():
         database="imagedb"
     )
     cursor = mydb.cursor()
-    cursor.execute(f"SELECT * FROM image WHERE name = '{title}'")
+    cursor.execute(f"SELECT * FROM systemdatabase.image WHERE name = '{title}'")
     mysql_result = cursor.fetchall()
 
     # 连接MongoDB

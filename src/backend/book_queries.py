@@ -3,7 +3,7 @@ from bson import ObjectId
 import mysql.connector
 from pymongo import MongoClient
 
-bp = Blueprint('book_queries', __name__)
+bp = Blueprint('image_queries', __name__)
 
 
 def json_encoder(o):
@@ -13,25 +13,55 @@ def json_encoder(o):
         f"Object of type {type(o).__name__} is not JSON serializable")
 
 
-@bp.route('/search_book', methods=['POST']) #模糊查询
-def search_book():
+@bp.route('/search_image', methods=['POST'])
+def search_image():
     title = request.json['title']
 
     # Fetch data from MySQL
     mydb = mysql.connector.connect(
         host="127.0.0.1",
         user="root",
-        password="Jesseli0915?",
-        database="bookdb"
+        port=3306,
+        password="ytx918107",
+        database="imagedb"
     )
     cursor = mydb.cursor()
-    cursor.execute(f"SELECT * FROM book WHERE title LIKE CONCAT('%', '{title}', '%') ")
+    cursor.execute(f"SELECT * FROM image WHERE name = '{title}'")
     mysql_result = cursor.fetchall()
 
     # 连接MongoDB
     mongo_client = MongoClient('localhost', 27017)
     mongo_db = mongo_client['DSA5104']
-    mongo_collection = mongo_db['book']
+    mongo_collection = mongo_db['image']
+    mongo_results = list(mongo_collection.find({"title": title}))
+    data = {
+        "mysql_data": mysql_result,
+        "mongo_data": mongo_results
+    }
+    response = make_response(json.dumps(data, default=json_encoder), 200)
+    response.mimetype = 'application/json'
+    return response
+
+@bp.route('/search_image_fuzzy', methods=['POST'])
+def search_image_fuzzy():
+    title = request.json['title']
+
+    # Fetch data from MySQL
+    mydb = mysql.connector.connect(
+        host="127.0.0.1",
+        user="root",
+        port=3306,
+        password="ytx918107",
+        database="imagedb"
+    )
+    cursor = mydb.cursor()
+    cursor.execute(f"SELECT * FROM image WHERE name  LIKE CONCAT('%', '{title}', '%') ")
+    mysql_result = cursor.fetchall()
+
+    # 连接MongoDB
+    mongo_client = MongoClient('localhost', 27017)
+    mongo_db = mongo_client['DSA5104']
+    mongo_collection = mongo_db['image']
     regex_pattern = f".*{title}.*"
     query = {"title": {"$regex": regex_pattern, "$options": "i"}}
     mongo_results = list(mongo_collection.find(query))
@@ -44,148 +74,27 @@ def search_book():
     return response
 
 
+@bp.route('/search_image_by_id', methods=['POST'])
+def search_image_by_id():
+    image_id = request.json['image_id']
 
-@bp.route('/search_book_by_id', methods=['POST']) 
-def search_book_by_id():
-    book_id = request.json['book_id']
-
-    # Fetch data from MySQL
-    mydb = mysql.connector.connect(
-        host="127.0.0.1",
-        user="root",
-        password="Jesseli0915?",
-        database="bookdb"
-    )
-    cursor = mydb.cursor()
-    cursor.execute(f"SELECT * FROM book WHERE book_id = '{book_id}'")
-    mysql_result = cursor.fetchone()
-
-    # 连接MongoDB
-    mongo_client = MongoClient('localhost', 27017)
-    mongo_db = mongo_client['DSA5104']
-    mongo_collection = mongo_db['book']
-    mongo_results = list(mongo_collection.find({"id": book_id}))
-    data = {
-        "mysql_data": mysql_result,
-        "mongo_data": mongo_results
-    }
-    response = make_response(json.dumps(data, default=json_encoder), 200)
-    response.mimetype = 'application/json'
-    return response
-
-
-
-
-@bp.route('/search_book_by_author_name', methods=['POST']) #作者名字查
-def search_book_by_author_name():
-    author_name = request.json['author_name']
-
-    # Fetch data from MySQL
-    mydb = mysql.connector.connect(
-        host="127.0.0.1",
-        user="root",
-        password="Jesseli0915?",
-        database="bookdb"
-    )
-    cursor = mydb.cursor()
-    cursor.execute(f"SELECT * FROM book join book_author on book.book_id = book_author.book_id join authors on authors.author_id = book_author.author_id WHERE authors.author_name like CONCAT('%', '{author_name}', '%')")
-    mysql_result = cursor.fetchall()
-
-    # 连接MongoDB
-    mongo_client = MongoClient('localhost', 27017)
-    mongo_db = mongo_client['DSA5104']
-    mongo_collection = mongo_db['book']
-    regex_pattern = f".*{author_name}.*"
-    query = {"title": {"$regex": regex_pattern, "$options": "i"}}
-    mongo_results = list(mongo_collection.find(query))
-    data = {
-        "mysql_data": mysql_result,
-        "mongo_data": mongo_results
-    }
-    response = make_response(json.dumps(data, default=json_encoder), 200)
-    response.mimetype = 'application/json'
-    return response
-
-
-
-@bp.route('/search_book_by_rating', methods=['POST']) #评分高于多少
-def search_book_by_rating():
-    rating = request.json['rating']
-
-    # Fetch data from MySQL
-    mydb = mysql.connector.connect(
-        host="127.0.0.1",
-        user="root",
-        password="Jesseli0915?",
-        database="bookdb"
-    )
-    cursor = mydb.cursor()
-    cursor.execute(f"SELECT * FROM book WHERE book.rating >= '{rating}'")
-    mysql_result = cursor.fetchall ()
-
-    # 连接MongoDB
-    mongo_client = MongoClient('localhost', 27017)
-    mongo_db = mongo_client['DSA5104']
-    mongo_collection = mongo_db['book']
-    mongo_results = list(mongo_collection.find({"rating": {"$gte": rating}}))
-    data = {
-        "mysql_data": mysql_result,
-        "mongo_data": mongo_results
-    }
-    response = make_response(json.dumps(data, default=json_encoder), 200)
-    response.mimetype = 'application/json'
-    return response
-
-
-@bp.route('/search_book_by_watch_numbers', methods=['POST']) #watch_numbers高于多少
-def search_book_by_watch_numbers():
-    watch_numbers = request.json['watch_numbers']
-
-    # Fetch data from MySQL
-    mydb = mysql.connector.connect(
-        host="127.0.0.1",
-        user="root",
-        password="Jesseli0915?",
-        database="bookdb"
-    )
-    cursor = mydb.cursor()
-    cursor.execute(f"SELECT * FROM book WHERE book.watch_numbers >= '{watch_numbers}'")
-    mysql_result = cursor.fetchall()
-
-    # 连接MongoDB
-    mongo_client = MongoClient('localhost', 27017)
-    mongo_db = mongo_client['DSA5104']
-    mongo_collection = mongo_db['book']
-    mongo_results = list(mongo_collection.find({"watch_numbers": {"$gte": watch_numbers}}))
-    data = {
-        "mysql_data": mysql_result,
-        "mongo_data": mongo_results
-    }
-    response = make_response(json.dumps(data, default=json_encoder), 200)
-    response.mimetype = 'application/json'
-    return response
-
-
-@bp.route('/find_top_rated_book', methods=['POST'])#查询top n rating book
-def find_top_rated_book():
-    top = request.json['top']
     # Fetch data from MySQL
     mydb = mysql.connector.connect(
         host="127.0.0.1",
         user="root",
         port=3306,
-        password="Jesseli0915?",
-        database="bookdb"
+        password="ytx918107",
+        database="imagedb"
     )
     cursor = mydb.cursor()
-    cursor.execute(f"SELECT * FROM book ORDER BY rating DESC LIMIT {top}")
+    cursor.execute(f"SELECT * FROM image WHERE image_id = '{image_id}'")
     mysql_result = cursor.fetchall()
 
     # 连接MongoDB
     mongo_client = MongoClient('localhost', 27017)
     mongo_db = mongo_client['DSA5104']
-    mongo_collection = mongo_db['book']
-    mongo_results = list(mongo_collection.find().sort([("rating", -1)]).limit(top))
+    mongo_collection = mongo_db['image']
+    mongo_results = list(mongo_collection.find({"id": image_id}))
     data = {
         "mysql_data": mysql_result,
         "mongo_data": mongo_results
@@ -195,27 +104,27 @@ def find_top_rated_book():
     return response
 
 
+@bp.route('/search_image_by_format', methods=['POST'])
+def find_images_by_type():
+    format = request.json['format']
 
-@bp.route('/find_top_score_book', methods=['POST'])#查询top n score book
-def find_top_score_book(limit=10):
-    top = request.json['top']
     # Fetch data from MySQL
     mydb = mysql.connector.connect(
         host="127.0.0.1",
         user="root",
         port=3306,
-        password="Jesseli0915?",
-        database="bookdb"
+        password="ytx918107",
+        database="imagedb"
     )
     cursor = mydb.cursor()
-    cursor.execute(f"SELECT * FROM book ORDER BY score DESC LIMIT {top}")
+    cursor.execute(f"SELECT * FROM image WHERE format = '{format}'")
     mysql_result = cursor.fetchall()
 
     # 连接MongoDB
     mongo_client = MongoClient('localhost', 27017)
     mongo_db = mongo_client['DSA5104']
-    mongo_collection = mongo_db['book']
-    mongo_results = list(mongo_collection.find().sort([("score", -1)]).limit(top))
+    mongo_collection = mongo_db['image']
+    mongo_results = list(mongo_collection.find({"format": format}))
     data = {
         "mysql_data": mysql_result,
         "mongo_data": mongo_results
@@ -224,26 +133,26 @@ def find_top_score_book(limit=10):
     response.mimetype = 'application/json'
     return response
 
-@bp.route('/find_top_watch_numbers_book', methods=['POST'])#查询top n watch_numbers book
-def find_top_watch_numbers_book(limit=10):
-    top = request.json['top']
+@bp.route('/find_top_rated_images', methods=['POST'])#查询top热度image
+def find_top_rated_images(limit=10):
+
     # Fetch data from MySQL
     mydb = mysql.connector.connect(
         host="127.0.0.1",
         user="root",
         port=3306,
-        password="Jesseli0915?",
-        database="bookdb"
+        password="ytx918107",
+        database="imagedb"
     )
     cursor = mydb.cursor()
-    cursor.execute(f"SELECT * FROM book ORDER BY watch_numbers DESC LIMIT {top}")
+    cursor.execute(f"SELECT * FROM image ORDER BY rating DESC LIMIT 10")
     mysql_result = cursor.fetchall()
 
     # 连接MongoDB
     mongo_client = MongoClient('localhost', 27017)
     mongo_db = mongo_client['DSA5104']
-    mongo_collection = mongo_db['book']
-    mongo_results = list(mongo_collection.find().sort([("watch_numbers", -1)]).limit(top))
+    mongo_collection = mongo_db['image']
+    mongo_results = list(mongo_collection.find().sort([("rating")]).limit(10))
     data = {
         "mysql_data": mysql_result,
         "mongo_data": mongo_results
@@ -252,26 +161,25 @@ def find_top_watch_numbers_book(limit=10):
     response.mimetype = 'application/json'
     return response
 
-
-@bp.route('/find_random_book', methods=['POST']) #随机查询
-def find_random_book():
+@bp.route('/find_random_images', methods=['POST'])#随机查询
+def find_random_images(limit=10):
     num = request.json['num']
     # Fetch data from MySQL
     mydb = mysql.connector.connect(
         host="127.0.0.1",
         user="root",
         port=3306,
-        password="Jesseli0915?",
-        database="bookdb"
+        password="ytx918107",
+        database="imagedb"
     )
     cursor = mydb.cursor()
-    cursor.execute(f"SELECT * FROM book ORDER BY RAND() LIMIT {num}")
+    cursor.execute(f"SELECT * FROM image ORDER BY RAND() LIMIT {num}")
     mysql_result = cursor.fetchall()
 
     # 连接MongoDB
     mongo_client = MongoClient('localhost', 27017)
     mongo_db = mongo_client['DSA5104']
-    mongo_collection = mongo_db['book']
+    mongo_collection = mongo_db['image']
     mongo_results = list(mongo_collection.aggregate([{"$sample": {"size": num}}]))
     data = {
         "mysql_data": mysql_result,
@@ -281,67 +189,114 @@ def find_random_book():
     response.mimetype = 'application/json'
     return response
 
-@bp.route('/find_book_all', methods=['POST']) #全面模糊查询
-def find_book_all():
-    author_name = request.json.get('author_name', '')
-    title = request.json.get('title', '')
-    rating = request.json.get('rating', 0)
-    watch_numbers = request.json.get('watch_numbers', 0)
-    score = request.json.get('score', 0)
-    
-    # 连接MySQL
+@bp.route('/find_images_by_genres', methods=['POST'])#查询image类型
+def find_images_by_genres():
+    genre = request.json['genre']
+    # Fetch data from MySQL
     mydb = mysql.connector.connect(
         host="127.0.0.1",
         user="root",
         port=3306,
-        password="Jesseli0915?",
-        database="bookdb"
+        password="ytx918107",
+        database="imagedb"
     )
     cursor = mydb.cursor()
-
-    # 构建MySQL查询
-    mysql_query = f"""SELECT * FROM book
-                      WHERE book_id IN
-                        (SELECT ba.book_id 
-                        FROM book_author AS ba
-                        JOIN authors AS a ON ba.author_id = a.author_id
-                        WHERE a.author_name LIKE CONCAT('%', '{author_name}', '%'))
-                      AND title LIKE CONCAT('%', '{title}', '%')
-                      AND score >= {score}
-                      AND rating >= {rating}
-                      AND watch_numbers >= {watch_numbers}
-                      ORDER BY rating DESC
-                      LIMIT 10"""
-
-    cursor.execute(mysql_query)
+    cursor.execute(f"SELECT * FROM image as I natural join image_genre as IG where IG.genre_id = (SELECT genre_id from genres where name = '{genre}')")
     mysql_result = cursor.fetchall()
 
     # 连接MongoDB
     mongo_client = MongoClient('localhost', 27017)
     mongo_db = mongo_client['DSA5104']
-    mongo_collection = mongo_db['book']
+    mongo_collection = mongo_db['image']
+    mongo_results = list(mongo_collection.find({"genres": genre}))
+    data = {
+        "mysql_data": mysql_result,
+        "mongo_data": mongo_results
+    }
+    response = make_response(json.dumps(data, default=json_encoder), 200)
+    response.mimetype = 'application/json'
+    return response
 
-    # 构建MongoDB聚合管道
+@bp.route('/find_images_by_cast', methods=['POST'])#模糊查询演员
+def find_images_by_cast():
+    cast = request.json['cast']
+    # Fetch data from MySQL
+    mydb = mysql.connector.connect(
+        host="127.0.0.1",
+        user="root",
+        port=3306,
+        password="ytx918107",
+        database="imagedb"
+    )
+    cursor = mydb.cursor()
+    cursor.execute(f"SELECT * FROM image as I natural join image_cast as IC where IC.cast_id in (SELECT cast_id from cast_info where cast_name like concat ('%', '{cast}', '%'));")
+    mysql_result = cursor.fetchall()
+
+    # 连接MongoDB
+    mongo_client = MongoClient('localhost', 27017)
+    mongo_db = mongo_client['DSA5104']
+    mongo_collection = mongo_db['image']
+    regex_pattern = f".*{cast}.*"
+    query = {"cast": {"$regex": regex_pattern, "$options": "i"}}
+    mongo_results = list(mongo_collection.find(query))
+    data = {
+        "mysql_data": mysql_result,
+        "mongo_data": mongo_results
+    }
+    response = make_response(json.dumps(data, default=json_encoder), 200)
+    response.mimetype = 'application/json'
+    return response
+
+@bp.route('/find_images', methods=['POST']) # 综合（模糊title、模糊cast、genre、高分要求、format、默认输出rating最高的10个）
+def find_images():
+    cast = request.json.get('cast', '')
+    title = request.json.get('title', '')
+    genre = request.json.get('genre', '')
+    rating = request.json.get('rating', 0)
+    format = request.json.get('format', '')
+    # Fetch data from MySQL
+    mydb = mysql.connector.connect(
+        host="127.0.0.1",
+        user="root",
+        port=3306,
+        password="ytx918107",
+        database="imagedb"
+    )
+    cursor = mydb.cursor()
+    cursor.execute(f"SELECT * FROM (SELECT * FROM image as I natural join image_cast as IC where IC.cast_id in (SELECT cast_id from cast_info where cast_name like concat ('%', '{cast}', '%'))) as table1 natural JOIN (SELECT * FROM image WHERE name  LIKE CONCAT('%', '{title}', '%') ) as table2 where rating > {rating} and table1.format LIKE CONCAT('%', '{format}', '%')  and table1.image_id in( SELECT I.image_id FROM image as I natural join image_genre as IG where IG.genre_id in (SELECT genre_id from genres where name LIKE CONCAT('%', '{genre}', '%'))) order by rating limit 10;")
+    mysql_result = cursor.fetchall()
+
+    # 连接MongoDB
+    mongo_client = MongoClient('localhost', 27017)
+    mongo_db = mongo_client['DSA5104']
+    mongo_collection = mongo_db['image']
+    genre_to_find = genre  # 要查询的 genre 值
+    name_to_find = cast  # 模糊匹配的 name 模式
+    title_to_find = title  # 模糊匹配的 title 模式
+    rate_threshold = rating  # 最低 rating 阈值
+    format_to_find = format  # 要查询的 format 值
+
+    # 创建聚合管道
     pipeline = [
         {
             "$match": {
-                "author": {"$regex": author_name, "$options": "i"},
-                "title": {"$regex": title, "$options": "i"},
-                "score": {"$gte": score},
-                "rating": {"$gte": rating},
-                "watch_numbers": {"$gte": watch_numbers},
+                "genres": {"$regex": genre_to_find, "$options": "i"},
+                "cast": {"$regex": name_to_find, "$options": "i"},
+                "title": {"$regex": title_to_find, "$options": "i"},
+                "rating": {"$gte": rate_threshold},
+                "format": {"$regex": format_to_find, "$options": "i"},
             }
         },
         {
-            "$sort": {"rating": -1}
+            "$sort": {"rating": -1}  # 按 rating 从高到低排序
         },
         {
-            "$limit": 10
+            "$limit": 10  # 返回最多十个结果
         }
     ]
 
+    # 执行聚合查询
     mongo_results = list(mongo_collection.aggregate(pipeline))
-
     data = {
         "mysql_data": mysql_result,
         "mongo_data": mongo_results
