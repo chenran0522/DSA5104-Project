@@ -7,6 +7,32 @@
     <title>NUS Database Query - Image_title</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
+        /* 表格样式 */
+        table {
+            width: 100%; /* 设置表格宽度为100% */
+            border-collapse: collapse; /* 去除边框间隙 */
+        }
+
+        /* 表格头部样式 */
+        th {
+            background-color: rgba(255, 99, 99, 0.485); /* 设置表头背景颜色 */
+            text-align: left; /* 文本左对齐 */
+            padding: 8px; /* 设置内边距 */
+            border: 1px solid #000000; /* 设置边框 */
+        }
+
+        /* 表格内容样式 */
+        td {
+            text-align: left; /* 文本左对齐 */
+            padding: 8px; /* 设置内边距 */
+            border: 1px solid #000000; /* 设置边框 */
+        }
+
+        /* 鼠标悬停时高亮显示行 */
+        tr:hover {
+            background-color: rgba(221, 143, 27, 0.408); /* 设置鼠标悬停时的背景颜色 */
+        }
+
         body {
             font-family: 'Poppins', sans-serif; /* Updated font */
             background: linear-gradient(45deg, #E78EA5,#FEB8CE);
@@ -76,11 +102,16 @@
             <input type="text" id="movieTitle" placeholder="Enter image title">
             <button onclick="searchMovie()">Search</button>
         </div>
+    
         <div id="searchResults">
             <h3>MySQL Results</h3>
             <pre id="mysqlResults"></pre>
             <h3>MongoDB Results</h3>
             <pre id="mongoResults"></pre>
+        </div>
+
+        <div id="totalCount">
+            <!-- 显示查询到的对象总数 -->
         </div>
 
         <script>
@@ -96,10 +127,81 @@
                 })
                     .then(response => response.json())
                     .then(data => {
-                        document.getElementById('mysqlResults').textContent = JSON.stringify(data.mysql_data, null, 2);
-                        document.getElementById('mongoResults').textContent = JSON.stringify(data.mongo_data, null, 2);
+                        const totalCountElement = document.getElementById('totalCount');
+                        totalCountElement.innerHTML = `Number of Total Results: ${data.mysql_data.length}`;
+                        const tableHeaders = {
+                            0: "image_id",
+                            1: "format",
+                            2: "name",
+                            3: "rating",
+                            4: "watch_numbers",
+                            5: "RUN_Time",
+                            6: "type_id"
+                        };
+
+                        const mysqlResults = data.mysql_data.map(item => {
+                            const result = {};
+                            for (const key in tableHeaders) {
+                                result[tableHeaders[key]] = item[key];
+                            }
+                            return result;
+                        });
+
+                        const mongoResults = data.mongo_data.map(item => {
+                            item.title = limitLength(JSON.stringify(item.title)
+                            .replace(/\[/g, '')
+                            .replace(/\]/g, '')
+                            .replace(/"/g, ''),15);   // 限制长度
+                            item.cast = limitLength(JSON.stringify(item.cast)
+                            .replace(/\[/g, '')
+                            .replace(/\]/g, '')
+                            .replace(/"/g, ''), 60); 
+                            return {
+                                title: item.title,
+                                format: item.format,
+                                cast: item.cast,
+                                rating: item.rating,
+                                watch_numbers: item.watch_numbers
+                            };
+                        });
+                        
+                        // 在前端以表格形式显示所选的结果
+                        displayResults(mysqlResults, 'mysqlResults');
+                        displayResults(mongoResults, 'mongoResults');
                     });
-            }
+                }
+                function limitLength(text, maxLength) {
+                    if (text.length > maxLength) {
+                        return text.substring(0, maxLength) + '...'; // 如果长度超过限制，添加省略号
+                    }
+                    return text;
+                }
+                function displayResults(results, elementId) {
+                    const table = document.createElement('table');
+                    const tableHeader = table.createTHead();
+                    const headerRow = tableHeader.insertRow(0);
+
+                    // 创建表头
+                    for (const key in results[0]) {
+                        const headerCell = document.createElement('th');
+                        headerCell.textContent = key;
+                        headerRow.appendChild(headerCell);
+                    }
+
+                    // 创建表格内容
+                    for (let i = 0; i < results.length; i++) {
+                        const row = table.insertRow(i + 1);
+                        for (const key in results[i]) {
+                            const cell = row.insertCell();
+                            cell.textContent = results[i][key];
+                        }
+                    }
+
+                    // 显示表格
+                    const displayElement = document.getElementById(elementId);
+                    displayElement.innerHTML = '';
+                    displayElement.appendChild(table);
+                }
         </script>
     </div>
 </body>
