@@ -109,16 +109,20 @@
             <h3>MongoDB Results</h3>
             <pre id="mongoResults"></pre>
         </div>
-
         <div id="totalCount">
             <!-- 显示查询到的对象总数 -->
         </div>
+        <div id="pagination">
+            <!-- 显示分页控件 -->
+        </div>
 
         <script>
+            const resultsPerPage = 5; // 每页显示的结果数量
+            let currentPage = 1; // 当前页码
             function searchMovie() {
                 let title = document.getElementById('movieTitle').value;
 
-                fetch('http://127.0.0.1:5000/search_image', {
+                fetch('http://127.0.0.1:5000/search_image_fuzzy', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -128,7 +132,12 @@
                     .then(response => response.json())
                     .then(data => {
                         const totalCountElement = document.getElementById('totalCount');
-                        totalCountElement.innerHTML = `Number of Total Results: ${data.mysql_data.length}`;
+                        const totalPages = Math.ceil(data.mysql_data.length / resultsPerPage);
+                        totalCountElement.innerHTML = `Number of Total Results: ${data.mysql_data.length},  ${totalPages} pages`;
+                        const paginationElement = document.getElementById('pagination');
+                        
+                        // 处理并显示查询结果
+
                         const tableHeaders = {
                             0: "image_id",
                             1: "format",
@@ -140,10 +149,11 @@
                         };
 
                         const mysqlResults = data.mysql_data.map(item => {
+                            item[2] = limitLength(item[2],40)
                             const result = {};
                             for (const key in tableHeaders) {
                                 result[tableHeaders[key]] = item[key];
-                            }
+                            };   // 限制长度
                             return result;
                         });
 
@@ -155,7 +165,7 @@
                             item.cast = limitLength(JSON.stringify(item.cast)
                             .replace(/\[/g, '')
                             .replace(/\]/g, '')
-                            .replace(/"/g, ''), 60); 
+                            .replace(/"/g, ''), 50); 
                             return {
                                 title: item.title,
                                 format: item.format,
@@ -164,10 +174,18 @@
                                 watch_numbers: item.watch_numbers
                             };
                         });
-                        
-                        // 在前端以表格形式显示所选的结果
-                        displayResults(mysqlResults, 'mysqlResults');
-                        displayResults(mongoResults, 'mongoResults');
+
+                        if (data.mysql_data.length === 0) {
+                            mongoResults = 'No results found.';
+                        } else {
+                            const startIndex = (currentPage - 1) * resultsPerPage;
+                            const endIndex = startIndex + resultsPerPage;
+                            
+                            displayResults(mysqlResults, 'mysqlResults',startIndex);
+                            displayResults(mongoResults, 'mongoResults',startIndex);
+                            // 显示分页控件
+                            displayPagination(totalPages,currentPage);
+                        }
                     });
                 }
                 function limitLength(text, maxLength) {
@@ -176,7 +194,7 @@
                     }
                     return text;
                 }
-                function displayResults(results, elementId) {
+                function displayResults(results, elementId, startIndex) {
                     const table = document.createElement('table');
                     const tableHeader = table.createTHead();
                     const headerRow = tableHeader.insertRow(0);
@@ -189,11 +207,11 @@
                     }
 
                     // 创建表格内容
-                    for (let i = 0; i < results.length; i++) {
+                    for (let i = 0; i < Math.min(resultsPerPage,results.length-startIndex); i++) {
                         const row = table.insertRow(i + 1);
                         for (const key in results[i]) {
                             const cell = row.insertCell();
-                            cell.textContent = results[i][key];
+                            cell.textContent = results[startIndex + i][key];
                         }
                     }
 
@@ -201,6 +219,86 @@
                     const displayElement = document.getElementById(elementId);
                     displayElement.innerHTML = '';
                     displayElement.appendChild(table);
+                }
+
+                function displayPagination(totalPages,currentPage) {
+                    const paginationElement = document.getElementById('pagination');
+                    paginationElement.innerHTML = '';
+
+                    
+                    if (totalPages > 1) {
+                        if (totalPages>=7){
+                            if (currentPage<=3){
+                                for    (let page = Math.max(currentPage-2,1); page <= Math.min(currentPage+2,totalPages); page++) {
+                                    const pageButton = document.createElement('button');
+                                    pageButton.textContent = page;
+                                    pageButton.onclick = () => goToPage(page);
+                                    paginationElement.appendChild(pageButton);
+                                }
+                                const pageButton = document.createElement('button');
+                                pageButton.textContent = "...";
+                                pageButton.onclick = () => goToPage(currentPage);
+                                paginationElement.appendChild(pageButton);
+                                const pageButtonlast = document.createElement('button');
+                                pageButtonlast.textContent = totalPages;
+                                pageButtonlast.onclick = () => goToPage(totalPages);
+                                paginationElement.appendChild(pageButtonlast);
+                            }
+                            else if (currentPage>=totalPages-2){
+                                const pageButton1 = document.createElement('button');
+                                pageButton1.textContent = 1;
+                                pageButton1.onclick = () => goToPage(1);
+                                paginationElement.appendChild(pageButton1);
+                                const pageButton = document.createElement('button');
+                                pageButton.textContent = "...";
+                                pageButton.onclick = () => goToPage(currentPage);
+                                paginationElement.appendChild(pageButton);
+                                for    (let page = Math.max(currentPage-2,1); page <= Math.min(currentPage+2,totalPages); page++) {
+                                    const pageButton = document.createElement('button');
+                                    pageButton.textContent = page;
+                                    pageButton.onclick = () => goToPage(page);
+                                    paginationElement.appendChild(pageButton);
+                                }
+                            }
+                            else {
+                                const pageButton1 = document.createElement('button');
+                                pageButton1.textContent = 1;
+                                pageButton1.onclick = () => goToPage(1);
+                                paginationElement.appendChild(pageButton1);
+                                const pageButton = document.createElement('button');
+                                pageButton.textContent = "...";
+                                pageButton.onclick = () => goToPage(currentPage);
+                                paginationElement.appendChild(pageButton);
+                                for    (let page = Math.max(currentPage-2,1); page <= Math.min(currentPage+2,totalPages); page++) {
+                                    const pageButton = document.createElement('button');
+                                    pageButton.textContent = page;
+                                    pageButton.onclick = () => goToPage(page);
+                                    paginationElement.appendChild(pageButton);
+                                }
+                                const pageButtons = document.createElement('button');
+                                pageButtons.textContent = "...";
+                                pageButtons.onclick = () => goToPage(currentPage);
+                                paginationElement.appendChild(pageButtons);
+                                const pageButtonlast = document.createElement('button');
+                                pageButtonlast.textContent = totalPages;
+                                pageButtonlast.onclick = () => goToPage(totalPages);
+                                paginationElement.appendChild(pageButtonlast);
+                            }
+
+                        }
+                        if (totalPages<=7){
+                            for (let page = Math.max(currentPage-2,1); page <= Math.min(currentPage+2,totalPages); page++) {
+                                const pageButton = document.createElement('button');
+                                pageButton.textContent = page;
+                                pageButton.onclick = () => goToPage(page);
+                                paginationElement.appendChild(pageButton);
+                        }}
+                    }
+                }
+
+                function goToPage(page) {
+                    currentPage = page;
+                    searchMovie(); // 重新运行查询以显示新的页码的结果
                 }
         </script>
     </div>
