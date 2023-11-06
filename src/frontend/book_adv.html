@@ -7,6 +7,32 @@
     <title>NUS Database Query - Book_adv</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
+        /* 表格样式 */
+        table {
+            width: 100%; /* 设置表格宽度为100% */
+            border-collapse: collapse; /* 去除边框间隙 */
+        }
+
+        /* 表格头部样式 */
+        th {
+            background-color: rgba(255, 99, 99, 0.485); /* 设置表头背景颜色 */
+            text-align: left; /* 文本左对齐 */
+            padding: 8px; /* 设置内边距 */
+            border: 1px solid #000000; /* 设置边框 */
+        }
+
+        /* 表格内容样式 */
+        td {
+            text-align: left; /* 文本左对齐 */
+            padding: 8px; /* 设置内边距 */
+            border: 1px solid #000000; /* 设置边框 */
+        }
+
+        /* 鼠标悬停时高亮显示行 */
+        tr:hover {
+            background-color: rgba(221, 143, 27, 0.408); /* 设置鼠标悬停时的背景颜色 */
+        }
+
         body {
             font-family: 'Poppins', sans-serif; /* Updated font */
             background: linear-gradient(45deg, #FFFD78, #FFC512);
@@ -34,10 +60,29 @@
         #searchBox {
             margin-top: 20px;
         }
-
         #movieTitle {
             padding: 10px;
-            width: 60%;
+            width: 30%;
+            border-radius: 5px;
+            border: none;
+        }#movieauthor_name {
+            padding: 10px;
+            width: 30%;
+            border-radius: 5px;
+            border: none;
+        }#movierating {
+            padding: 10px;
+            width: 30%;
+            border-radius: 5px;
+            border: none;
+        }#moviewatch_numbers {
+            padding: 10px;
+            width: 30%;
+            border-radius: 5px;
+            border: none;
+        }#moviescore {
+            padding: 10px;
+            width: 30%;
             border-radius: 5px;
             border: none;
         }
@@ -45,7 +90,7 @@
         button {
             padding: 10px 20px;
             border: none;
-            background-color: #bca20f;
+            background-color: #d545b1;
             color: #fff;
             border-radius: 5px;
             cursor: pointer;
@@ -53,7 +98,7 @@
         }
 
         button:hover {
-            background-color: #bca20f;
+            background-color: #B8408F;
         }
 
         #searchResults {
@@ -67,13 +112,17 @@
         }
     </style>
 </head>
-
+        
 <body>
     <div class="container">
         <img src="https://www.nus.edu.sg/images/default-source/base/logo.png" alt="NUS Logo" class="logo">
-        <h2>Advanced search & Filter</h2>
+        <h2>Search Book by Title, Author_name, Rating, watch_numbers and score</h2>
         <div id="searchBox">
-            <input type="text" id="movieTitle" placeholder="Enter book characteristic">
+            <input type="text" id="movieauthor_name" placeholder="Enter image author_name (Sergio Cobo)">
+            <input type="text" id="movieTitle" placeholder="Enter image title (Una)">
+            <input type="text" id="movierating" placeholder="Enter least rating (4.50)">
+            <input type="text" id="moviewatch_numbers" placeholder="Enter image watch_numbers (11000)">
+            <input type="text" id="moviescore" placeholder="Enter image score (36846)">
             <button onclick="searchMovie()">Search</button>
         </div>
         <div id="searchResults">
@@ -82,24 +131,196 @@
             <h3>MongoDB Results</h3>
             <pre id="mongoResults"></pre>
         </div>
+        <div id="totalCount">
+            <!-- 显示查询到的对象总数 -->
+        </div>
+        <div id="pagination">
+            <!-- 显示分页控件 -->
+        </div>
 
         <script>
+            const resultsPerPage = 5; // 每页显示的结果数量
+            let currentPage = 1; // 当前页码
             function searchMovie() {
                 let title = document.getElementById('movieTitle').value;
-
-                fetch('http://127.0.0.1:5000/search_image', {
+                let rating = document.getElementById('movierating').value;
+                let author_name = document.getElementById('movieauthor_name').value;
+                let watch_numbers = document.getElementById('moviewatch_numbers').value;
+                let score = document.getElementById('moviescore').value;
+                fetch('http://127.0.0.1:5000/find_book_all', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ title: title })
+                    body: JSON.stringify({ title: title ,rating:rating,author_name:author_name,watch_numbers:watch_numbers,score:score})
                 })
                     .then(response => response.json())
                     .then(data => {
-                        document.getElementById('mysqlResults').textContent = JSON.stringify(data.mysql_data, null, 2);
-                        document.getElementById('mongoResults').textContent = JSON.stringify(data.mongo_data, null, 2);
+                        const totalCountElement = document.getElementById('totalCount');
+                        const totalPages = Math.ceil(data.mysql_data.length / resultsPerPage);
+                        totalCountElement.innerHTML = `Number of Total Results: ${data.mysql_data.length},  ${totalPages} pages`;
+                        const paginationElement = document.getElementById('pagination');
+                        
+                        // 处理并显示查询结果
+
+                        const tableHeaders = {
+                            0: "book_id",
+                            1: "title",
+                            2: "rating",
+                            3: "watch_numbers",
+                            4: "score",
+                            5: "type_id"
+                        };
+
+                        const mysqlResults = data.mysql_data.map(item => {
+                            item[1] = limitLength(item[1],40)
+                            const result = {};
+                            for (const key in tableHeaders) {
+                                result[tableHeaders[key]] = item[key];
+                            };   // 限制长度
+                            return result;
+                        });
+
+                        const mongoResults = data.mongo_data.map(item => {
+                            item.title = limitLength(JSON.stringify(item.title)
+                            .replace(/\[/g, '')
+                            .replace(/\]/g, '')
+                            .replace(/"/g, ''),15);
+                            return {
+                                id: item.id,
+                                title: item.title,
+                                rating: item.rating,
+                                author: item.author,
+                                watch_numbers: item.watch_numbers,
+                                score: item.score,
+                            };
+                        });
+
+                        if (data.mysql_data.length === 0) {
+                            mongoResults = 'No results found.';
+                        } else {
+                            const startIndex = (currentPage - 1) * resultsPerPage;
+                            const endIndex = startIndex + resultsPerPage;
+                            
+                            displayResults(mysqlResults, 'mysqlResults',startIndex);
+                            displayResults(mongoResults, 'mongoResults',startIndex);
+                            // 显示分页控件
+                            displayPagination(totalPages,currentPage);
+                        }
                     });
-            }
+                }
+                function limitLength(text, maxLength) {
+                    if (text.length > maxLength) {
+                        return text.substring(0, maxLength) + '...'; // 如果长度超过限制，添加省略号
+                    }
+                    return text;
+                }
+                function displayResults(results, elementId, startIndex) {
+                    const table = document.createElement('table');
+                    const tableHeader = table.createTHead();
+                    const headerRow = tableHeader.insertRow(0);
+
+                    // 创建表头
+                    for (const key in results[0]) {
+                        const headerCell = document.createElement('th');
+                        headerCell.textContent = key;
+                        headerRow.appendChild(headerCell);
+                    }
+
+                    // 创建表格内容
+                    for (let i = 0; i < Math.min(resultsPerPage,results.length-startIndex); i++) {
+                        const row = table.insertRow(i + 1);
+                        for (const key in results[i]) {
+                            const cell = row.insertCell();
+                            cell.textContent = results[startIndex + i][key];
+                        }
+                    }
+
+                    // 显示表格
+                    const displayElement = document.getElementById(elementId);
+                    displayElement.innerHTML = '';
+                    displayElement.appendChild(table);
+                }
+
+                function displayPagination(totalPages,currentPage) {
+                    const paginationElement = document.getElementById('pagination');
+                    paginationElement.innerHTML = '';
+
+                    
+                    if (totalPages > 1) {
+                        if (totalPages>=7){
+                            if (currentPage<=3){
+                                for    (let page = Math.max(currentPage-2,1); page <= Math.min(currentPage+2,totalPages); page++) {
+                                    const pageButton = document.createElement('button');
+                                    pageButton.textContent = page;
+                                    pageButton.onclick = () => goToPage(page);
+                                    paginationElement.appendChild(pageButton);
+                                }
+                                const pageButton = document.createElement('button');
+                                pageButton.textContent = "...";
+                                pageButton.onclick = () => goToPage(currentPage);
+                                paginationElement.appendChild(pageButton);
+                                const pageButtonlast = document.createElement('button');
+                                pageButtonlast.textContent = totalPages;
+                                pageButtonlast.onclick = () => goToPage(totalPages);
+                                paginationElement.appendChild(pageButtonlast);
+                            }
+                            else if (currentPage>=totalPages-2){
+                                const pageButton1 = document.createElement('button');
+                                pageButton1.textContent = 1;
+                                pageButton1.onclick = () => goToPage(1);
+                                paginationElement.appendChild(pageButton1);
+                                const pageButton = document.createElement('button');
+                                pageButton.textContent = "...";
+                                pageButton.onclick = () => goToPage(currentPage);
+                                paginationElement.appendChild(pageButton);
+                                for    (let page = Math.max(currentPage-2,1); page <= Math.min(currentPage+2,totalPages); page++) {
+                                    const pageButton = document.createElement('button');
+                                    pageButton.textContent = page;
+                                    pageButton.onclick = () => goToPage(page);
+                                    paginationElement.appendChild(pageButton);
+                                }
+                            }
+                            else {
+                                const pageButton1 = document.createElement('button');
+                                pageButton1.textContent = 1;
+                                pageButton1.onclick = () => goToPage(1);
+                                paginationElement.appendChild(pageButton1);
+                                const pageButton = document.createElement('button');
+                                pageButton.textContent = "...";
+                                pageButton.onclick = () => goToPage(currentPage);
+                                paginationElement.appendChild(pageButton);
+                                for    (let page = Math.max(currentPage-2,1); page <= Math.min(currentPage+2,totalPages); page++) {
+                                    const pageButton = document.createElement('button');
+                                    pageButton.textContent = page;
+                                    pageButton.onclick = () => goToPage(page);
+                                    paginationElement.appendChild(pageButton);
+                                }
+                                const pageButtons = document.createElement('button');
+                                pageButtons.textContent = "...";
+                                pageButtons.onclick = () => goToPage(currentPage);
+                                paginationElement.appendChild(pageButtons);
+                                const pageButtonlast = document.createElement('button');
+                                pageButtonlast.textContent = totalPages;
+                                pageButtonlast.onclick = () => goToPage(totalPages);
+                                paginationElement.appendChild(pageButtonlast);
+                            }
+
+                        }
+                        if (totalPages<=7){
+                            for (let page = Math.max(currentPage-2,1); page <= Math.min(currentPage+2,totalPages); page++) {
+                                const pageButton = document.createElement('button');
+                                pageButton.textContent = page;
+                                pageButton.onclick = () => goToPage(page);
+                                paginationElement.appendChild(pageButton);
+                        }}
+                    }
+                }
+
+                function goToPage(page) {
+                    currentPage = page;
+                    searchMovie(); // 重新运行查询以显示新的页码的结果
+                }
         </script>
     </div>
 </body>
