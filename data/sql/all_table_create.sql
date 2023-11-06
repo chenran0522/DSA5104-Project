@@ -12,7 +12,7 @@ DROP TABLE IF EXISTS Authors;
 DROP TABLE IF EXISTS Book;
 
 DROP TABLE IF EXISTS Music_Artist;
-DROP TABLE IF EXISTS Music_genre;
+DROP TABLE IF EXISTS Music_genres;
 DROP TABLE IF EXISTS Artist;
 DROP TABLE IF EXISTS Music;
 
@@ -68,9 +68,9 @@ CREATE TABLE image_cast (
 CREATE TABLE Book (
     book_id INT PRIMARY KEY,
     title VARCHAR(255),
-	rating INT,
+	rating FLOAT,
 	watch_numbers INT,
-   	score INT, 
+   	score FLOAT, 
     type_id INT
 );
 
