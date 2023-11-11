@@ -97,10 +97,10 @@
 <body>
     <div class="container">
         <img src="https://www.nus.edu.sg/images/default-source/base/logo.png" alt="NUS Logo" class="logo">
-        <h2>Search Image by Genre</h2>
+        <h2>Search Music by Genre</h2>
         <div id="searchBox">
-            <input type="text" id="movieTitle" placeholder="Enter image genre">
-            <button onclick="searchMovie()">Search</button>
+            <input type="text" id="movieTitle" placeholder="Enter music genre">
+            <button onclick="searchMusic()">Search</button>
         </div>
     
         <div id="searchResults">
@@ -119,10 +119,10 @@
         <script>
             const resultsPerPage = 5; // 每页显示的结果数量
             let currentPage = 1; // 当前页码
-            function searchMovie() {
-                let title = document.getElementById('movieTitle').value;
+            function searchMusic() {
+                let title = document.getElementById('genre').value;
 
-                fetch('http://127.0.0.1:5000/find_images_by_genres', {
+                fetch('http://127.0.0.1:5000/find_music_by_genres', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

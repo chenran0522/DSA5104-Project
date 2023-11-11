@@ -5,7 +5,7 @@ import re
 # 数据库连接配置
 config = {
     'user': 'root',
-    'password': 'ytx918107',
+    'password': 'cr003265...',
     'host': '127.0.0.1',
     'database': 'userDB',
     'raise_on_warnings': True
