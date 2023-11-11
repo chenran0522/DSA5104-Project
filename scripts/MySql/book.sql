@@ -15,7 +15,7 @@ CREATE TABLE Book (
    	score INT, 
     type_id INT
 );
-
+CREATE INDEX idx_book_id ON my_table(book_id);
 CREATE TABLE Authors (
     author_id INT AUTO_INCREMENT PRIMARY KEY,
     Author_name VARCHAR(255) UNIQUE

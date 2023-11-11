@@ -11,7 +11,7 @@ CREATE TABLE User (
     name VARCHAR(255),
     password VARCHAR(255));
 
-
+CREATE INDEX idx_user_id ON my_table(user_id);
 CREATE TABLE Evaluation (
     user_id INT,
     type_id INT,
