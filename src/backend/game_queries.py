@@ -54,18 +54,18 @@ def search_game():
 
 @bp.route('/search_game_by_id', methods=['POST']) 
 def search_game_by_id():
-    id =(request.json['id'])
+    id =int(request.json['id'])
 
     # Fetch data from MySQL
     mydb = mysql.connector.connect(
         host="127.0.0.1",
         user="root",
-        password="Jesseli0915?",
+        password="ytx918107",
         database="SYSTEMDATABASE"
     )
     cursor = mydb.cursor()
     cursor.execute(f"SELECT * FROM game WHERE game_id = '{id}'")
-    mysql_result = cursor.fetchone()
+    mysql_result = cursor.fetchall()
 
     # 连接MongoDB
     mongo_client = MongoClient('localhost', 27017)
