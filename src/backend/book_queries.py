@@ -21,7 +21,7 @@ def search_book():
     mydb = mysql.connector.connect(
         host="127.0.0.1",
         user="root",
-        password="ytx918107"
+        password=" "
     )
     cursor = mydb.cursor()
     cursor.execute(f"use systemdatabase")
@@ -53,7 +53,7 @@ def search_book_by_id():
     mydb = mysql.connector.connect(
         host="127.0.0.1",
         user="root",
-        password="ytx918107"
+        password=" "
     )
     cursor = mydb.cursor()
     cursor.execute(f"use systemdatabase")
@@ -74,8 +74,6 @@ def search_book_by_id():
     return response
 
 
-
-
 @bp.route('/search_book_by_author_name', methods=['POST']) #作者名字查
 def search_book_by_author_name():
     author_name = request.json['author_name']
@@ -83,7 +81,7 @@ def search_book_by_author_name():
     mydb = mysql.connector.connect(
         host="127.0.0.1",
         user="root",
-        password="ytx918107",
+        password=" ",
         database="bookdb"
     )
     cursor = mydb.cursor()
@@ -116,7 +114,7 @@ def search_book_by_rating():
     mydb = mysql.connector.connect(
         host="127.0.0.1",
         user="root",
-        password="ytx918107",
+        password=" ",
         database="bookdb"
     )
     cursor = mydb.cursor()
@@ -146,7 +144,7 @@ def search_book_by_watch_numbers():
     mydb = mysql.connector.connect(
         host="127.0.0.1",
         user="root",
-        password="ytx918107",
+        password=" ",
         database="bookdb"
     )
     cursor = mydb.cursor()
@@ -176,7 +174,7 @@ def find_top_rated_book():
         host="127.0.0.1",
         user="root",
         port=3306,
-        password="ytx918107",
+        password=" ",
         database="bookdb"
     )
     cursor = mydb.cursor()
@@ -207,7 +205,7 @@ def find_top_score_book(limit=10):
         host="127.0.0.1",
         user="root",
         port=3306,
-        password="ytx918107",
+        password=" ",
         database="bookdb"
     )
     cursor = mydb.cursor()
@@ -236,7 +234,7 @@ def find_top_watch_numbers_book(limit=10):
         host="127.0.0.1",
         user="root",
         port=3306,
-        password="ytx918107",
+        password=" ",
         database="bookdb"
     )
     cursor = mydb.cursor()
@@ -266,7 +264,7 @@ def find_random_book():
         host="127.0.0.1",
         user="root",
         port=3306,
-        password="ytx918107",
+        password=" ",
         database="bookdb"
     )
     cursor = mydb.cursor()
@@ -300,7 +298,7 @@ def find_book_all():
         host="127.0.0.1",
         user="root",
         port=3306,
-        password="ytx918107",
+        password=" ",
         database="bookdb"
     )
     cursor = mydb.cursor()
