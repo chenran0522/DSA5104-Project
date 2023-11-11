@@ -17,7 +17,7 @@ CREATE TABLE Image (
     RUN_Time INT,
     type_id INT
 );
-
+CREATE INDEX idx_image_id ON my_table(image_id);
 CREATE TABLE genres (
     genre_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) UNIQUE

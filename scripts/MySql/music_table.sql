@@ -16,11 +16,14 @@ CREATE TABLE Music (
     play_count INT,
     type_id INT
 );
+CREATE INDEX idx_music_id ON my_table(music_id);
+
 
 CREATE TABLE genres (
     genre_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) unique
 );
+
 
 CREATE TABLE Music_genres (
     music_id INT,

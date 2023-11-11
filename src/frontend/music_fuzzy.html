@@ -85,14 +85,14 @@
 
         <script>
             function searchMovie() {
-                let title = document.getElementById('movieTitle').value;
+                let title = document.getElementById('music_name').value;
 
-                fetch('http://127.0.0.1:5000/search_image', {
+                fetch('http://127.0.0.1:5000/search_music_fuzzy', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ title: title })
+                    body: JSON.stringify({ title: music_name })
                 })
                     .then(response => response.json())
                     .then(data => {

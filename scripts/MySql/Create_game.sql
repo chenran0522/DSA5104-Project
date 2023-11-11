@@ -16,7 +16,7 @@ CREATE TABLE Game (
     rating FLOAT,
     type_id INT
 );
-
+CREATE INDEX idx_game_id ON my_table(game_id);
 CREATE TABLE genres (
     genre_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) UNIQUE

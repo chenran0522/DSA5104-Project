@@ -4,30 +4,17 @@ import re
 
 # 数据库连接配置
 config = {
-<<<<<<< HEAD
-    'user': 'root',
-    'password': 'ytx918107',
-    'host': '127.0.0.1',
-    'database': 'userDB',
-    'raise_on_warnings': True
-}   
-=======
     "user": "root",
-    "password": "Wxp-0525",
+    "password": "cr003265...",
     "host": "127.0.0.1",
     "database": "SYSTEMDATABASE",
     "raise_on_warnings": True,
 }
->>>>>>> de12af8 (create whole database)
 
 # 与MySQL建立连接
 conn = mysql.connector.connect(**config)
 cursor = conn.cursor()
 
-<<<<<<< HEAD
-=======
-
->>>>>>> de12af8 (create whole database)
 with open("../../data/json/evaluation.json", "r", encoding="utf-8") as json_file:
     data = json_file.read()
 
