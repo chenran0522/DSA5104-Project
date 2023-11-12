@@ -35,9 +35,27 @@
             margin-top: 20px;
         }
 
-        #movieTitle {
+        #musicName {
             padding: 10px;
-            width: 60%;
+            width: 20%;
+            border-radius: 5px;
+            border: none;
+        }
+        #musicArtist {
+            padding: 10px;
+            width: 20%;
+            border-radius: 5px;
+            border: none;
+        }
+        #musicGenre {
+            padding: 10px;
+            width: 20%;
+            border-radius: 5px;
+            border: none;
+        }
+        #musicRating {
+            padding: 10px;
+            width: 20%;
             border-radius: 5px;
             border: none;
         }
@@ -65,6 +83,12 @@
             padding: 10px;
             border-radius: 5px;
         }
+        
+        #mysqlResults,
+        #mongoResults {
+            max-height: 300px; /* Set a maximum height for better visibility */
+            overflow-y: auto; /* Add a vertical scrollbar when content overflows */
+        }
     </style>
 </head>
 
@@ -73,7 +97,10 @@
         <img src="https://www.nus.edu.sg/images/default-source/base/logo.png" alt="NUS Logo" class="logo">
         <h2>Advanced search & Filter</h2>
         <div id="searchBox">
-            <input type="text" id="movieTitle" placeholder="Enter music characteristic">
+            <input type="text" id="musicName" placeholder="Enter music name">
+            <input type="text" id="musicArtist" placeholder="Enter music artist">
+            <input type="text" id="musicGenre" placeholder="Enter music genre">
+            <input type="text" id="musicRating" placeholder="Enter music rating">
             <button onclick="searchMovie()">Search</button>
         </div>
         <div id="searchResults">
@@ -85,14 +112,17 @@
 
         <script>
             function searchMovie() {
-                let title = document.getElementById('movieTitle').value;
+                let music_name = document.getElementById('musicName').value;
+                let artist = document.getElementById('musicArtist').value;
+                let genre = document.getElementById('musicGenre').value;
+                let rating = document.getElementById('musicRating').value;
 
-                fetch('http://127.0.0.1:5000/search_image', {
+                fetch('http://127.0.0.1:5000/find_music', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ title: title })
+                    body: JSON.stringify({ music_name: music_name, artist : artist, genre : genre, rating : rating })
                 })
                     .then(response => response.json())
                     .then(data => {

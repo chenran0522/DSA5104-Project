@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NUS Database Query - Music_title</title>
+    <title>NUS Database Query - Music Name</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         body {
@@ -65,6 +65,12 @@
             padding: 10px;
             border-radius: 5px;
         }
+        
+        #mysqlResults,
+        #mongoResults {
+            max-height: 300px; /* Set a maximum height for better visibility */
+            overflow-y: auto; /* Add a vertical scrollbar when content overflows */
+        }
     </style>
 </head>
 
@@ -85,14 +91,14 @@
 
         <script>
             function searchMovie() {
-                let title = document.getElementById('music_name').value;
+                let music_name = document.getElementById('movieTitle').value; 
 
                 fetch('http://127.0.0.1:5000/search_music_fuzzy', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ title: music_name })
+                    body: JSON.stringify({ music_name: music_name })
                 })
                     .then(response => response.json())
                     .then(data => {

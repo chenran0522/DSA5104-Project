@@ -65,6 +65,12 @@
             padding: 10px;
             border-radius: 5px;
         }
+        
+        #mysqlResults,
+        #mongoResults {
+            max-height: 300px; /* Set a maximum height for better visibility */
+            overflow-y: auto; /* Add a vertical scrollbar when content overflows */
+        }
     </style>
 </head>
 
@@ -73,7 +79,7 @@
         <img src="https://www.nus.edu.sg/images/default-source/base/logo.png" alt="NUS Logo" class="logo">
         <h2>Recommend Music</h2>
         <div id="searchBox">
-            <input type="text" id="movieTitle" placeholder="Enter recommend">
+            <input type="text" id="movieTitle" placeholder="Enter number of music to recommend">
             <button onclick="searchMovie()">Search</button>
         </div>
         <div id="searchResults">
@@ -85,14 +91,14 @@
 
         <script>
             function searchMovie() {
-                let title = document.getElementById('movieTitle').value;
+                let num = Number(document.getElementById('movieTitle').value);
 
-                fetch('http://127.0.0.1:5000/search_image', {
+                fetch('http://127.0.0.1:5000/find_random_music', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ title: title })
+                    body: JSON.stringify({ num: num })
                 })
                     .then(response => response.json())
                     .then(data => {

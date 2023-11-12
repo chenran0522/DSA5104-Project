@@ -63,7 +63,7 @@ def search_image_fuzzy():
     mongo_db = mongo_client['DSA5104']
     mongo_collection = mongo_db['music']
     regex_pattern = f".*{music_name}.*"
-    query = {"title": {"$regex": regex_pattern, "$options": "i"}}
+    query = {"music_name": {"$regex": regex_pattern, "$options": "i"}}
     mongo_results = list(mongo_collection.find(query))
     data = {
         "mysql_data": mysql_result,
@@ -225,9 +225,9 @@ def find_images_by_cast():
 def find_images():
     artist = request.json.get('artist', '')
     music_name = request.json.get('music_name', '')
-    genre = request.json.get('genres', [])[0]
-    rating = request.json.get('rating', 0)
-    #print([genre,rating])
+    genre = request.json.get('genre', '')
+    rating = float(request.json.get('rating', 0))
+    print([rating, type(rating)])
     #format = request.json.get('format', '')
     # Fetch data from MySQL
     mydb = mysql.connector.connect(
@@ -241,7 +241,7 @@ def find_images():
     #cursor.execute(f"SELECT * FROM (SELECT * FROM image as I natural join image_cast as IC where IC.cast_id in (SELECT cast_id from cast_info where cast_name like concat ('%', '{cast}', '%'))) as table1 natural JOIN (SELECT * FROM image WHERE name  LIKE CONCAT('%', '{title}', '%') ) as table2 where rating > {rating} and table1.format LIKE CONCAT('%', '{format}', '%')  and table1.image_id in( SELECT I.image_id FROM image as I natural join image_genre as IG where IG.genre_id in (SELECT genre_id from genres where name LIKE CONCAT('%', '{genre}', '%'))) order by rating limit 10;")
     cursor.execute(f"SELECT * FROM (SELECT * FROM music as I natural join music_artist as MA where MA.artist_id in (SELECT artist_id from artist where artist_name like concat ('%', '{artist}', '%'))) as table1 natural JOIN (SELECT * FROM music WHERE music_name  LIKE CONCAT('%', '{music_name}', '%') ) as table2 where rating > {rating}  and table1.music_id in( SELECT I.music_id FROM music as I natural join music_genres as IG where IG.genre_id in (SELECT genre_id from genres where name LIKE CONCAT('%', '{genre}', '%'))) order by rating limit 10;")
     mysql_result = cursor.fetchall()
-    print(f"SELECT * FROM (SELECT * FROM music as I natural join music_artist as MA where MA.artist_id in (SELECT artist_id from artist where artist_name like concat ('%', '{artist}', '%'))) as table1 natural JOIN (SELECT * FROM music WHERE music_name  LIKE CONCAT('%', '{music_name}', '%') ) as table2 where rating >{rating}  and table1.music_id in( SELECT I.music_id FROM music as I natural join music_genres as IG where IG.genre_id in (SELECT genre_id from genres where name LIKE CONCAT('%', '{genre}', '%'))) order by rating limit 10;")
+    # print(f"SELECT * FROM (SELECT * FROM music as I natural join music_artist as MA where MA.artist_id in (SELECT artist_id from artist where artist_name like concat ('%', '{artist}', '%'))) as table1 natural JOIN (SELECT * FROM music WHERE music_name  LIKE CONCAT('%', '{music_name}', '%') ) as table2 where rating >{rating}  and table1.music_id in( SELECT I.music_id FROM music as I natural join music_genres as IG where IG.genre_id in (SELECT genre_id from genres where name LIKE CONCAT('%', '{genre}', '%'))) order by rating limit 10;")
 
     # 连接MongoDB
     mongo_client = MongoClient('localhost', 27017)
@@ -274,6 +274,7 @@ def find_images():
 
     # 执行聚合查询
     mongo_results = list(mongo_collection.aggregate(pipeline))
+    print(mongo_results)
     data = {
         "mysql_data": mysql_result,
         "mongo_data": mongo_results
