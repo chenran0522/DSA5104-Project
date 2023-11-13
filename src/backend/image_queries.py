@@ -191,11 +191,16 @@ def find_images_by_genres():
     mysql_result = cursor.fetchall()
 
     # 连接MongoDB
-    mongo_client = MongoClient("localhost", 27017)
-    mongo_db = mongo_client["DSA5104"]
-    mongo_collection = mongo_db["image"]
-    mongo_results = list(mongo_collection.find({"genres": genre}))
-    data = {"mysql_data": mysql_result, "mongo_data": mongo_results}
+    mongo_client = MongoClient('localhost', 27017)
+    mongo_db = mongo_client['DSA5104']
+    mongo_collection = mongo_db['image']
+    regex_pattern = f".*{genre}.*"
+    query = {"genres": {"$regex": regex_pattern, "$options": "i"}}
+    mongo_results = list(mongo_collection.find(query))
+    data = {
+        "mysql_data": mysql_result,
+        "mongo_data": mongo_results
+    }
     response = make_response(json.dumps(data, default=json_encoder), 200)
     response.mimetype = "application/json"
     return response
