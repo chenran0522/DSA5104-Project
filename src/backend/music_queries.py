@@ -12,18 +12,22 @@ def json_encoder(o):
     raise TypeError(f"Object of type {type(o).__name__} is not JSON serializable")
 
 
+def connect_to_mysql():
+    return mysql.connector.connect(
+        host="127.0.0.1",
+        user="root",
+        port=3306,
+        password="Wxp-0525",  # 应该从安全的地方获取
+        database="systemdatabase",
+    )
+
+
 @bp.route("/search_music", methods=["POST"])
 def search_image():
     music_name = request.json["music_name"]
 
     # Fetch data from MySQL
-    mydb = mysql.connector.connect(
-        host="127.0.0.1",
-        user="root",
-        port=3306,
-        password="Wxp-0525",
-        database="systemdatabase",
-    )
+    mydb = connect_to_mysql()
     cursor = mydb.cursor()
     cursor.execute(
         f"SELECT * FROM systemdatabase.music WHERE music_name = '{music_name}'"
@@ -46,13 +50,7 @@ def search_image_fuzzy():
     music_name = request.json["music_name"]
 
     # Fetch data from MySQL
-    mydb = mysql.connector.connect(
-        host="127.0.0.1",
-        user="root",
-        port=3306,
-        password="Wxp-0525",
-        database="systemdatabase",
-    )
+    mydb = connect_to_mysql()
     cursor = mydb.cursor()
     cursor.execute(
         f"SELECT * FROM music WHERE music_name  LIKE CONCAT('%', '{music_name}', '%') "
@@ -77,13 +75,7 @@ def search_music_by_id():
     music_id = request.json["music_id"]
 
     # Fetch data from MySQL
-    mydb = mysql.connector.connect(
-        host="127.0.0.1",
-        user="root",
-        port=3306,
-        password="cr003265...",
-        database="systemdatabase",
-    )
+    mydb = connect_to_mysql()
     cursor = mydb.cursor()
     cursor.execute(f"SELECT * FROM music WHERE music_id = '{music_id}'")
     mysql_result = cursor.fetchall()
@@ -102,13 +94,7 @@ def search_music_by_id():
 @bp.route("/find_top_rated_music", methods=["POST"])  # 查询top热度image
 def find_top_rated_music(limit=10):
     # Fetch data from MySQL
-    mydb = mysql.connector.connect(
-        host="127.0.0.1",
-        user="root",
-        port=3306,
-        password="cr003265...",
-        database="systemdatabase",
-    )
+    mydb = connect_to_mysql()
     cursor = mydb.cursor()
     cursor.execute(f"SELECT * FROM music ORDER BY rating DESC LIMIT 10")
     mysql_result = cursor.fetchall()
@@ -128,13 +114,7 @@ def find_top_rated_music(limit=10):
 def find_random_images(limit=10):
     num = request.json["num"]
     # Fetch data from MySQL
-    mydb = mysql.connector.connect(
-        host="127.0.0.1",
-        user="root",
-        port=3306,
-        password="cr003265...",
-        database="systemdatabase",
-    )
+    mydb = connect_to_mysql()
     cursor = mydb.cursor()
     cursor.execute(f"SELECT * FROM music ORDER BY RAND() LIMIT {num}")
     mysql_result = cursor.fetchall()
@@ -154,13 +134,7 @@ def find_random_images(limit=10):
 def find_images_by_genres():
     genre = request.json["genre"]
     # Fetch data from MySQL
-    mydb = mysql.connector.connect(
-        host="127.0.0.1",
-        user="root",
-        port=3306,
-        password="cr003265...",
-        database="systemdatabase",
-    )
+    mydb = connect_to_mysql()
     cursor = mydb.cursor()
     cursor.execute(
         f"SELECT * FROM music as I natural join music_genres as MG where MG.genre_id = (SELECT genre_id from genres where name = '{genre}')"
@@ -182,13 +156,7 @@ def find_images_by_genres():
 def find_images_by_cast():
     artist = request.json["artist"]
     # Fetch data from MySQL
-    mydb = mysql.connector.connect(
-        host="127.0.0.1",
-        user="root",
-        port=3306,
-        password="cr003265...",
-        database="systemdatabase",
-    )
+    mydb = connect_to_mysql()
     cursor = mydb.cursor()
     # cursor.execute(f"SELECT * FROM music as I natural join image_cast as IC where IC.cast_id in (SELECT cast_id from cast_info where cast_name like concat ('%', '{cast}', '%'));")
     cursor.execute(
@@ -220,13 +188,7 @@ def find_images():
     print([rating, type(rating)])
     # format = request.json.get('format', '')
     # Fetch data from MySQL
-    mydb = mysql.connector.connect(
-        host="127.0.0.1",
-        user="root",
-        port=3306,
-        password="cr003265...",
-        database="systemdatabase",
-    )
+    mydb = connect_to_mysql()
     cursor = mydb.cursor()
     # cursor.execute(f"SELECT * FROM (SELECT * FROM image as I natural join image_cast as IC where IC.cast_id in (SELECT cast_id from cast_info where cast_name like concat ('%', '{cast}', '%'))) as table1 natural JOIN (SELECT * FROM image WHERE name  LIKE CONCAT('%', '{title}', '%') ) as table2 where rating > {rating} and table1.format LIKE CONCAT('%', '{format}', '%')  and table1.image_id in( SELECT I.image_id FROM image as I natural join image_genre as IG where IG.genre_id in (SELECT genre_id from genres where name LIKE CONCAT('%', '{genre}', '%'))) order by rating limit 10;")
     cursor.execute(
