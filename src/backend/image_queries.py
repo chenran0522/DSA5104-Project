@@ -234,7 +234,9 @@ def find_images_by_genres():
     mongo_client = MongoClient('localhost', 27017)
     mongo_db = mongo_client['DSA5104']
     mongo_collection = mongo_db['image']
-    mongo_results = list(mongo_collection.find({"genres": genre}))
+    regex_pattern = f".*{genre}.*"
+    query = {"genres": {"$regex": regex_pattern, "$options": "i"}}
+    mongo_results = list(mongo_collection.find(query))
     data = {
         "mysql_data": mysql_result,
         "mongo_data": mongo_results
