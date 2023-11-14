@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NUS Music Query</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(45deg, #677A04,#33B864);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+        }
+
+        .container {
+            text-align: center;
+            padding: 50px;
+            background: rgba(0, 0, 0, .6);
+            border-radius: 15px;
+            width: 80%;
+            max-width: 800px;
+        }
+
+        .logo {
+            width: 150px;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(181, 174, 174, 0.5);
+        }
+
+        .queries {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .query {
+            flex: 1 1 calc(33.333% - 20px);
+            padding: 20px;
+            background: rgba(255, 255, 255, .1);
+            border-radius: 10px;
+            transition: transform .3s, background .3s;
+        }
+
+        .query:hover {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, .2);
+        }
+
+        .query p {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        a {
+            text-decoration: none;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<!-- <div id='poweredBy' style='position: fixed; right: 0; bottom: 0; background-color: #ffffff; color: white; padding: 10px; z-index: 1000; border-top-left-radius: 10px; font-family: Roboto, sans-serif;'>
+    <span class='info-icon' style='margin-right: 5px; font-size: 1.2em;'>&#x2139;</span> Powered by <b><a href='https://converter.app' style='color: white;' target="_blank">Converter App</a></b>
+</div> -->
+<div class="container">
+    <img src="https://www.nus.edu.sg/images/default-source/base/logo.png" alt="NUS Logo" class="logo">
+    <h2>Music</h2>
+    <div class="queries">
+        <div class="query">
+            <a href="music_pk.html"><p>Primary Key Search</p></a>
+        </div>
+        <div class="query">
+            <a href="music_fuzzy.html"><p>Fuzzy Search</p></a>
+        </div>
+        <div class="query">
+            <a href="music_cat.html"><p>Artist-based Search</p></a>
+        </div>
+        <div class="query">
+            <a href="music_tr.html"><p>Top Rated Search</p></a>
+        </div>
+        <div class="query">
+            <a href="music_pop.html"><p>Category-based Search</p></a>
+        </div>
+        <div class="query">
+            <a href="music_rand.html"> <p>Random Search</p></a>
+        </div>
+        <div class="query">
+            <a href="music_join.html"><p>Join Search</p></a>
+        </div>
+        <div class="query">
+            <a href="music_adv.html"> <p>Advanced Search & Filter</p></a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

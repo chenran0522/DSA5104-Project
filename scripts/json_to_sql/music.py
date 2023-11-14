@@ -4,7 +4,7 @@ import json
 # 数据库连接配置
 config = {
     "user": "root",
-    "password": "cr003265...",
+    "password": "Wxp-0525",
     "host": "127.0.0.1",
     "database": "SYSTEMDATABASE",
     "raise_on_warnings": True,
@@ -40,8 +40,8 @@ with open("../../data/json/music.json", "r") as file:
             for genre in genres:
                 if genre not in inserted_genres:
                     cursor.execute("INSERT INTO genres (name) VALUES (%s) ", (genre,))
-                    #cursor.execute("INSERT INTO genres (name) VALUES (%s) on duplicate key update name=genre", (genre,))
-                    #cursor.execute("INSERT INTO genres (name) VALUES (%s) ON DUPLICATE KEY UPDATE name = %s", (genre, genre))
+                    # cursor.execute("INSERT INTO genres (name) VALUES (%s) on duplicate key update name=genre", (genre,))
+                    # cursor.execute("INSERT INTO genres (name) VALUES (%s) ON DUPLICATE KEY UPDATE name = %s", (genre, genre))
 
                     inserted_genres.add(genre)
 
@@ -77,18 +77,18 @@ with open("../../data/json/music.json", "r") as file:
         artist_names_list = data.get("artist_name")
         if artist_names_list:
             for artist_name in artist_names_list:
-                #if artist_name not in inserted_artist_names:
-                    
+                # if artist_name not in inserted_artist_names:
+
                 cursor.execute(
-                        "SELECT artist_id FROM Artist WHERE artist_name = %s;",
-                        (artist_name,),
-                    )
+                    "SELECT artist_id FROM Artist WHERE artist_name = %s;",
+                    (artist_name,),
+                )
                 artist_id = cursor.fetchone()[0]
 
                 cursor.execute(
-                        "INSERT INTO Music_Artist (music_id, artist_id) VALUES (%s, %s) ON DUPLICATE KEY UPDATE music_id=music_id",
-                        (data["id"], artist_id),
-                    )
+                    "INSERT INTO Music_Artist (music_id, artist_id) VALUES (%s, %s) ON DUPLICATE KEY UPDATE music_id=music_id",
+                    (data["id"], artist_id),
+                )
         # 提交事务
         conn.commit()
 

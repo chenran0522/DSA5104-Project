@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NUS Database Query - Music_time</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif; /* Updated font */
+            background: linear-gradient(45deg, #677A04,#33B864);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+        }
+
+        .container {
+            text-align: center;
+            padding: 30px;
+            background: rgba(54, 53, 54, 0.7);
+            border-radius: 15px;
+            width: 80%;
+            max-width: 800px;
+        }
+
+        .logo {
+            width: 150px;
+            margin-bottom: 20px;
+        }
+
+        #searchBox {
+            margin-top: 20px;
+        }
+
+        #movieTitle {
+            padding: 10px;
+            width: 60%;
+            border-radius: 5px;
+            border: none;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #217d3b;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #B8408F;
+        }
+
+        #searchResults {
+            margin-top: 20px;
+        }
+
+        pre {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+        }
+        
+        #mysqlResults,
+        #mongoResults {
+            max-height: 300px; /* Set a maximum height for better visibility */
+            overflow-y: auto; /* Add a vertical scrollbar when content overflows */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <img src="https://www.nus.edu.sg/images/default-source/base/logo.png" alt="NUS Logo" class="logo">
+        <h2>Show Top Rated 10 Music</h2>
+        <div id="searchBox">
+            
+            <button onclick="searchMovie()">Search</button>
+        </div>
+        <div id="searchResults">
+            <h3>MySQL Results</h3>
+            <pre id="mysqlResults"></pre>
+            <h3>MongoDB Results</h3>
+            <pre id="mongoResults"></pre>
+        </div>
+
+        <script>
+            function searchMovie() {
+                
+
+                fetch('http://127.0.0.1:5000/find_top_rated_music', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('mysqlResults').textContent = JSON.stringify(data.mysql_data, null, 2);
+                        document.getElementById('mongoResults').textContent = JSON.stringify(data.mongo_data, null, 2);
+                    });
+            }
+        </script>
+    </div>
+</body>
+
+</html>
