@@ -17,7 +17,7 @@ def connect_to_mysql():
         host="127.0.0.1",
         user="root",
         port=3306,
-        password="Wxp-0525",  # 应该从安全的地方获取
+        password="ytx918107",  # 应该从安全的地方获取
         database="systemdatabase",
     )
 

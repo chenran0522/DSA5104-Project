@@ -16,13 +16,9 @@ def connect_to_mysql():
     return mysql.connector.connect(
         host="127.0.0.1",
         user="root",
-<<<<<<< HEAD
-        password="Jesseli0915?"
-=======
         port=3306,
-        password="Wxp-0525",  # 应该从安全的地方获取
+        password="ytx918107",  # 应该从安全的地方获取
         database="systemdatabase",
->>>>>>> 72e66a30e8e115a4815924d24017c0777e78c3bf
     )
 
 
@@ -55,15 +51,7 @@ def search_book_by_id():
     book_id = int(request.json["id"])
 
     # Fetch data from MySQL
-<<<<<<< HEAD
-    mydb = mysql.connector.connect(
-        host="127.0.0.1",
-        user="root",
-        password="Jesseli0915?"
-    )
-=======
     mydb = connect_to_mysql()
->>>>>>> 72e66a30e8e115a4815924d24017c0777e78c3bf
     cursor = mydb.cursor()
     cursor.execute(f"use systemdatabase")
     cursor.execute(f"SELECT * FROM book WHERE book_id = '{book_id}'")
@@ -80,24 +68,11 @@ def search_book_by_id():
     return response
 
 
-<<<<<<< HEAD
-@bp.route('/search_book_by_author_name', methods=['POST']) #作者名字查
-=======
 @bp.route("/search_book_by_author_name", methods=["POST"])  # 作者名字查
->>>>>>> 72e66a30e8e115a4815924d24017c0777e78c3bf
 def search_book_by_author_name():
     author_name = request.json["author_name"]
     # Fetch data from MySQL
-<<<<<<< HEAD
-    mydb = mysql.connector.connect(
-        host="127.0.0.1",
-        user="root",
-        password="Jesseli0915?",
-        database="bookdb"
-    )
-=======
     mydb = connect_to_mysql()
->>>>>>> 72e66a30e8e115a4815924d24017c0777e78c3bf
     cursor = mydb.cursor()
     cursor.execute(f"use systemdatabase")
     cursor.execute(
@@ -123,15 +98,7 @@ def search_book_by_rating():
     rating = float(request.json["rating"])
 
     # Fetch data from MySQL
-<<<<<<< HEAD
-    mydb = mysql.connector.connect(
-        host="127.0.0.1",
-        user="root",
-        password="Jesseli0915?",
-    )
-=======
     mydb = connect_to_mysql()
->>>>>>> 72e66a30e8e115a4815924d24017c0777e78c3bf
     cursor = mydb.cursor()
     cursor.execute(f"use systemdatabase")
     cursor.execute(f"SELECT * FROM book WHERE book.rating >= '{rating}'")
@@ -153,16 +120,7 @@ def search_book_by_watch_numbers():
     watch_numbers = int(request.json["watch_numbers"])
 
     # Fetch data from MySQL
-<<<<<<< HEAD
-    mydb = mysql.connector.connect(
-        host="127.0.0.1",
-        user="root",
-        password="Jesseli0915?",
-        database="bookdb"
-    )
-=======
     mydb = connect_to_mysql()
->>>>>>> 72e66a30e8e115a4815924d24017c0777e78c3bf
     cursor = mydb.cursor()
     cursor.execute(f"use systemdatabase")
     cursor.execute(f"SELECT * FROM book WHERE book.watch_numbers >= '{watch_numbers}'")
@@ -185,17 +143,7 @@ def search_book_by_watch_numbers():
 def find_top_rated_book():
     top = int(request.json["top"])
     # Fetch data from MySQL
-<<<<<<< HEAD
-    mydb = mysql.connector.connect(
-        host="127.0.0.1",
-        user="root",
-        port=3306,
-        password="Jesseli0915?",
-        database="bookdb"
-    )
-=======
     mydb = connect_to_mysql()
->>>>>>> 72e66a30e8e115a4815924d24017c0777e78c3bf
     cursor = mydb.cursor()
     cursor.execute(f"use systemdatabase")
     cursor.execute(f"SELECT * FROM book ORDER BY rating DESC LIMIT {top}")
@@ -216,17 +164,7 @@ def find_top_rated_book():
 def find_top_score_book(limit=10):
     top = request.json["top"]
     # Fetch data from MySQL
-<<<<<<< HEAD
-    mydb = mysql.connector.connect(
-        host="127.0.0.1",
-        user="root",
-        port=3306,
-        password="Jesseli0915?",
-        database="bookdb"
-    )
-=======
     mydb = connect_to_mysql()
->>>>>>> 72e66a30e8e115a4815924d24017c0777e78c3bf
     cursor = mydb.cursor()
     cursor.execute(f"use systemdatabase")
     cursor.execute(f"SELECT * FROM book ORDER BY score DESC LIMIT {top}")
@@ -249,17 +187,7 @@ def find_top_score_book(limit=10):
 def find_top_watch_numbers_book(limit=10):
     top = int(request.json["top"])
     # Fetch data from MySQL
-<<<<<<< HEAD
-    mydb = mysql.connector.connect(
-        host="127.0.0.1",
-        user="root",
-        port=3306,
-        password="Jesseli0915?",
-        database="bookdb"
-    )
-=======
     mydb = connect_to_mysql()
->>>>>>> 72e66a30e8e115a4815924d24017c0777e78c3bf
     cursor = mydb.cursor()
     cursor.execute(f"use systemdatabase")
     cursor.execute(f"SELECT * FROM book ORDER BY watch_numbers DESC LIMIT {top}")
@@ -282,17 +210,7 @@ def find_top_watch_numbers_book(limit=10):
 def find_random_book():
     num = int(request.json["num"])
     # Fetch data from MySQL
-<<<<<<< HEAD
-    mydb = mysql.connector.connect(
-        host="127.0.0.1",
-        user="root",
-        port=3306,
-        password="Jesseli0915?",
-        database="bookdb"
-    )
-=======
     mydb = connect_to_mysql()
->>>>>>> 72e66a30e8e115a4815924d24017c0777e78c3bf
     cursor = mydb.cursor()
     cursor.execute(f"use systemdatabase")
     cursor.execute(f"SELECT * FROM book ORDER BY RAND() LIMIT {num}")
@@ -318,17 +236,7 @@ def find_book_all():
     score = int(request.json.get("score", 0))
 
     # 连接MySQL
-<<<<<<< HEAD
-    mydb = mysql.connector.connect(
-        host="127.0.0.1",
-        user="root",
-        port=3306,
-        password="Jesseli0915?",
-        database="bookdb"
-    )
-=======
     mydb = connect_to_mysql()
->>>>>>> 72e66a30e8e115a4815924d24017c0777e78c3bf
     cursor = mydb.cursor()
 
     cursor.execute(f"use systemdatabase")
