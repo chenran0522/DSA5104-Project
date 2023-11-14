@@ -282,7 +282,7 @@
                             }
 
                         }
-                        if (totalPages<=7){
+                        if (totalPages<7){
                             for (let page = Math.max(currentPage-2,1); page <= Math.min(currentPage+2,totalPages); page++) {
                                 const pageButton = document.createElement('button');
                                 pageButton.textContent = page;

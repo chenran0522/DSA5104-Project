@@ -118,11 +118,11 @@
         <img src="https://www.nus.edu.sg/images/default-source/base/logo.png" alt="NUS Logo" class="logo">
         <h2>Search Book by Title, Author_name, Rating, watch_numbers and score</h2>
         <div id="searchBox">
-            <input type="text" id="movieauthor_name" placeholder="Enter image author_name (Sergio Cobo)">
-            <input type="text" id="movieTitle" placeholder="Enter image title (Una)">
+            <input type="text" id="movieauthor_name" placeholder="Enter book author_name (Sergio Cobo)">
+            <input type="text" id="movieTitle" placeholder="Enter book title (Una)">
             <input type="text" id="movierating" placeholder="Enter least rating (4.50)">
-            <input type="text" id="moviewatch_numbers" placeholder="Enter image watch_numbers (11000)">
-            <input type="text" id="moviescore" placeholder="Enter image score (36846)">
+            <input type="text" id="moviewatch_numbers" placeholder="Enter book watch_numbers (11000)">
+            <input type="text" id="moviescore" placeholder="Enter book score (36846)">
             <button onclick="searchMovie()">Search</button>
         </div>
         <div id="searchResults">
@@ -307,7 +307,7 @@
                             }
 
                         }
-                        if (totalPages<=7){
+                        if (totalPages<7){
                             for (let page = Math.max(currentPage-2,1); page <= Math.min(currentPage+2,totalPages); page++) {
                                 const pageButton = document.createElement('button');
                                 pageButton.textContent = page;
