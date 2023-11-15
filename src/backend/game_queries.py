@@ -172,7 +172,7 @@ def search_game_by_genres():
 
 
 @bp.route("/find_top_rated_game", methods=["POST"])  # 查询top n rating book
-def find_top_rated_book():
+def find_top_rated_game():
     top = int(request.json["top"])
     # Fetch data from MySQL
     mydb = connect_to_mysql()
@@ -192,7 +192,7 @@ def find_top_rated_book():
 
 
 @bp.route("/find_random_game", methods=["POST"])  # 随机查询
-def find_random_book():
+def find_random_game():
     num = int(request.json["num"])
     # Fetch data from MySQL
     mydb = connect_to_mysql()
