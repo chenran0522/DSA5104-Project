@@ -35,7 +35,7 @@
 
         body {
             font-family: 'Poppins', sans-serif; /* Updated font */
-            background: linear-gradient(45deg, #E78EA5,#FEB8CE);
+            background: linear-gradient(45deg, #677A04,#33B864);
             height: 100vh;
             display: flex;
             align-items: center;
@@ -71,7 +71,7 @@
         button {
             padding: 10px 20px;
             border: none;
-            background-color: #d545b1;
+            background-color: #217d3b;
             color: #fff;
             border-radius: 5px;
             cursor: pointer;
@@ -155,6 +155,14 @@
                         });
 
                         const mongoResults = data.mongo_data.map(item => {
+                            item.music_name = limitLength(JSON.stringify(item.music_name)
+                            .replace(/\[/g, '')
+                            .replace(/\]/g, '')
+                            .replace(/"/g, ''),20);
+                            item.artist_name = limitLength(JSON.stringify(item.artist_name)
+                            .replace(/\[/g, '')
+                            .replace(/\]/g, '')
+                            .replace(/"/g, ''),20);
                             return {
                                 id: item.id,
                                 music_name: item.music_name,

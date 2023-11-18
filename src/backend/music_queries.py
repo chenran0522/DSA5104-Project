@@ -93,17 +93,18 @@ def search_music_by_id():
 
 @bp.route("/find_top_rated_music", methods=["POST"])  # 查询top热度image
 def find_top_rated_music(limit=10):
+    num = int(request.json["Num"])
     # Fetch data from MySQL
     mydb = connect_to_mysql()
     cursor = mydb.cursor()
-    cursor.execute(f"SELECT * FROM music ORDER BY rating DESC LIMIT 10")
+    cursor.execute(f"SELECT * FROM music ORDER BY rating DESC LIMIT {num}")
     mysql_result = cursor.fetchall()
 
     # 连接MongoDB
     mongo_client = MongoClient("localhost", 27017)
     mongo_db = mongo_client["DSA5104"]
     mongo_collection = mongo_db["music"]
-    mongo_results = list(mongo_collection.find().sort([("rating")]).limit(10))
+    mongo_results = list(mongo_collection.find().sort([("rating")]).limit(num))
     data = {"mysql_data": mysql_result, "mongo_data": mongo_results}
     response = make_response(json.dumps(data, default=json_encoder), 200)
     response.mimetype = "application/json"
@@ -111,8 +112,8 @@ def find_top_rated_music(limit=10):
 
 
 @bp.route("/find_random_music", methods=["POST"])  # 随机查询
-def find_random_images(limit=10):
-    num = request.json["num"]
+def find_random_music(limit=10):
+    num = int(request.json["Num"])
     # Fetch data from MySQL
     mydb = connect_to_mysql()
     cursor = mydb.cursor()
@@ -131,7 +132,7 @@ def find_random_images(limit=10):
 
 
 @bp.route("/find_music_by_genres", methods=["POST"])  # 查询image类型
-def find_images_by_genres():
+def find_music_by_genres():
     genre = request.json["genre"]
     # Fetch data from MySQL
     mydb = connect_to_mysql()
@@ -153,7 +154,7 @@ def find_images_by_genres():
 
 
 @bp.route("/find_music_by_artist", methods=["POST"])  # 模糊查询artist
-def find_images_by_cast():
+def find_music_by_cast():
     artist = request.json["artist"]
     # Fetch data from MySQL
     mydb = connect_to_mysql()
@@ -180,7 +181,7 @@ def find_images_by_cast():
 @bp.route(
     "/find_music", methods=["POST"]
 )  # 综合（模糊title、模糊cast、genre、高分要求、format、默认输出rating最高的10个）
-def find_images():
+def find_music():
     artist = request.json.get("artist", "")
     music_name = request.json.get("music_name", "")
     genre = request.json.get("genre", "")
