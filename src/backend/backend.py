@@ -12,5 +12,6 @@ CORS(app)
 app.register_blueprint(image_queries.bp)
 app.register_blueprint(book_queries.bp)
 app.register_blueprint(game_queries.bp)
+app.register_blueprint(music_queries.bp)
 if __name__ == "__main__":
     app.run(debug=True)

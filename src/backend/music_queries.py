@@ -72,7 +72,7 @@ def search_image_fuzzy():
 
 @bp.route("/search_music_by_id", methods=["POST"])
 def search_music_by_id():
-    music_id = request.json["music_id"]
+    music_id = int(request.json["music_id"])
 
     # Fetch data from MySQL
     mydb = connect_to_mysql()
