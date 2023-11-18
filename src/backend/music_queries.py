@@ -17,7 +17,7 @@ def connect_to_mysql():
         host="127.0.0.1",
         user="root",
         port=3306,
-        password="ytx918107",  # 应该从安全的地方获取
+        password="cr003265...",  # 应该从安全的地方获取
         database="systemdatabase",
     )
 
@@ -192,9 +192,23 @@ def find_music():
     mydb = connect_to_mysql()
     cursor = mydb.cursor()
     # cursor.execute(f"SELECT * FROM (SELECT * FROM image as I natural join image_cast as IC where IC.cast_id in (SELECT cast_id from cast_info where cast_name like concat ('%', '{cast}', '%'))) as table1 natural JOIN (SELECT * FROM image WHERE name  LIKE CONCAT('%', '{title}', '%') ) as table2 where rating > {rating} and table1.format LIKE CONCAT('%', '{format}', '%')  and table1.image_id in( SELECT I.image_id FROM image as I natural join image_genre as IG where IG.genre_id in (SELECT genre_id from genres where name LIKE CONCAT('%', '{genre}', '%'))) order by rating limit 10;")
+    #cursor.execute(
+    #   f"SELECT * FROM (SELECT * FROM music as I natural join music_artist as MA where MA.artist_id in (SELECT artist_id from artist where artist_name like concat ('%', '{artist}', '%'))) as table1 natural JOIN (SELECT * FROM music WHERE music_name  LIKE CONCAT('%', '{music_name}', '%') ) as table2 where rating > {rating}  and table1.music_id in( SELECT I.music_id FROM music as I natural join music_genres as IG where IG.genre_id in (SELECT genre_id from genres where name LIKE CONCAT('%', '{genre}', '%'))) order by rating limit 10;"
+    #)
     cursor.execute(
-        f"SELECT * FROM (SELECT * FROM music as I natural join music_artist as MA where MA.artist_id in (SELECT artist_id from artist where artist_name like concat ('%', '{artist}', '%'))) as table1 natural JOIN (SELECT * FROM music WHERE music_name  LIKE CONCAT('%', '{music_name}', '%') ) as table2 where rating > {rating}  and table1.music_id in( SELECT I.music_id FROM music as I natural join music_genres as IG where IG.genre_id in (SELECT genre_id from genres where name LIKE CONCAT('%', '{genre}', '%'))) order by rating limit 10;"
+        f"""select distinct music.music_id,music.music_name,music.rating,music.play_count
+          from music join music_artist on music.music_id=music_artist.music_id
+                    join music_genres on music_genres.music_id=music.music_id
+                    join genres on music_genres.genre_id=genres.genre_id
+                    join artist on artist.artist_id=music_artist.artist_id
+                    where music.music_name LIKE CONCAT('%', '{music_name}', '%')
+                    and artist.artist_name LIKE CONCAT('%', '{artist}', '%')
+                    and genres.name LIKE CONCAT('%', '{genre}', '%')
+                    and (music.rating>={rating} or {rating}=0)
+                    order by music.rating DESC
+                    limit 1000;"""
     )
+
     mysql_result = cursor.fetchall()
     # print(f"SELECT * FROM (SELECT * FROM music as I natural join music_artist as MA where MA.artist_id in (SELECT artist_id from artist where artist_name like concat ('%', '{artist}', '%'))) as table1 natural JOIN (SELECT * FROM music WHERE music_name  LIKE CONCAT('%', '{music_name}', '%') ) as table2 where rating >{rating}  and table1.music_id in( SELECT I.music_id FROM music as I natural join music_genres as IG where IG.genre_id in (SELECT genre_id from genres where name LIKE CONCAT('%', '{genre}', '%'))) order by rating limit 10;")
 
