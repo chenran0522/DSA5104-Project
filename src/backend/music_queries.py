@@ -17,7 +17,7 @@ def connect_to_mysql():
         host="127.0.0.1",
         user="root",
         port=3306,
-        password="cr003265...",  # 应该从安全的地方获取
+        password="ytx918107",  # 应该从安全的地方获取
         database="systemdatabase",
     )
 
@@ -104,7 +104,7 @@ def find_top_rated_music(limit=10):
     mongo_client = MongoClient("localhost", 27017)
     mongo_db = mongo_client["DSA5104"]
     mongo_collection = mongo_db["music"]
-    mongo_results = list(mongo_collection.find().sort([("rating")]).limit(num))
+    mongo_results = list(mongo_collection.find().sort([("rating", -1)]).limit(num))
     data = {"mysql_data": mysql_result, "mongo_data": mongo_results}
     response = make_response(json.dumps(data, default=json_encoder), 200)
     response.mimetype = "application/json"
